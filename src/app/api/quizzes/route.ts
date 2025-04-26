@@ -86,7 +86,9 @@ export async function POST(request: NextRequest) {
     // Check if the error is a Mongoose ValidationError
     if (error instanceof mongoose.Error.ValidationError) {
       // If the error is a validation error, handle it
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+      const validationErrors =Object.values(error.errors).map(
+        (err: mongoose.Error.ValidatorError | mongoose.Error.CastError) => err.message
+      );
       return NextResponse.json({ error: validationErrors.join(", ") }, { status: 400 });
     }
 
