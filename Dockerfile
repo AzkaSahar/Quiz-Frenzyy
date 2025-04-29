@@ -23,7 +23,7 @@ COPY --from=builder /app/node_modules ./node_modules
 # 4. Copy compiled output & config
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.js ./next.config.js
+COPY --from=builder /app/next.config.ts ./next.config.ts
 
 # 5. Expose & launch
 EXPOSE 3000
