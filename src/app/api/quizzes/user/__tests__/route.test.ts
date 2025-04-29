@@ -17,23 +17,14 @@ jest.mock('@/models/playerQuizModel', () => ({
 }));
 jest.mock('jsonwebtoken', () => ({ verify: jest.fn() }));
 
-// Define mock response type
-type MockResponse = {
-  status?: number;
-  headers?: HeadersInit;
-  json: () => Promise<any>;
-};
+
 
 // Stub NextResponse.json for assertions
 beforeAll(() => {
-  const jsonSpy = jest.spyOn(NextResponse, 'json');
-
-  
+  // Nothing needed here
 });
-
-
 afterAll(() => {
-  (NextResponse.json as jest.Mock).mockRestore();
+  
 });
 
 describe('GET /api/user/quizzes', () => {

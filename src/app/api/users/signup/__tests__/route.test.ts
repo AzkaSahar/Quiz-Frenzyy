@@ -11,7 +11,7 @@ jest.mock('@/models/userModel')
 
 const mockedConnect = connect as jest.Mock
 const mockedFindOne = User.findOne as jest.Mock
-const MockUser = User as unknown as jest.Mock
+const MockUser = User as jest.MockedClass<typeof User>
 
 describe('POST /api/users/signup route', () => {
   beforeEach(() => {
