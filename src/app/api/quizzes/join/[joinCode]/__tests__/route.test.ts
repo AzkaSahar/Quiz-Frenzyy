@@ -7,6 +7,7 @@ import * as dbConfig from '@/dbConfig/dbConfig';
 import Session from '@/models/sessionModel';
 import PlayerQuiz from '@/models/playerQuizModel';
 import type { NextRequest } from 'next/server';
+import { Model, Document } from 'mongoose';
 
 // ————————————————————————————————————————————————————— mocks —————————————————————————————————————————————————————
 jest.mock('@/dbConfig/dbConfig', () => ({ connect: jest.fn() }));
@@ -16,16 +17,29 @@ jest.mock('@/models/sessionModel', () => {
   return { __esModule: true, default: m };
 });
 
+// Mocking the PlayerQuiz model
 jest.mock('@/models/playerQuizModel', () => {
-  const m: { findOne: jest.Mock; new (): PlayerQuizDoc } = jest.fn() as any;
+  const mockFindOne = jest.fn();
+  const mockSave = jest.fn().mockResolvedValue(undefined);
 
-  // Explicitly mock the `findOne` method to resolve with null (or the necessary mock data)
-  m.findOne = jest.fn().mockResolvedValue(null);
+  const PlayerQuizMock = Object.assign(
+    jest.fn().mockImplementation(() => ({
+      save: mockSave,
+      session_id: 's1',
+      quiz_id: 'q1',
+      player_id: 'user42',
+      score: 0,
+      _id: 'newPQ',
+    })),
+    {
+      findOne: mockFindOne,
+    }
+  );
 
-  // Mock the constructor function to return a mock PlayerQuizDoc
-  m.prototype.save = jest.fn().mockResolvedValue(undefined);
-
-  return { __esModule: true, default: m };
+  return {
+    __esModule: true,
+    default: PlayerQuizMock,
+  };
 });
 
 
@@ -63,12 +77,32 @@ describe('GET /api/quizzes/join/[joinCode]', () => {
     } as unknown as NextRequest;
   }
 
-  it('400 if no join code in URL', async () => {
-    const res = await GET(makeReq('/api/quizzes/join/'));
-    expect(dbConfig.connect).toHaveBeenCalled();
+  it('400 if player already joined', async () => {
+    const fakeSession: FakeSession = {
+      _id: 's1',
+      quiz_id: { _id: 'q1' },
+      end_time: null,
+      is_active: true,
+    };
+  
+    // Mock Session to return the fake session
+    (Session.findOne as jest.Mock).mockReturnValue({
+      populate: jest.fn().mockResolvedValue(fakeSession),
+    });
+  
+    // Mock PlayerQuiz to simulate an existing player
+    (PlayerQuiz.findOne as jest.Mock).mockResolvedValue({ _id: 'pq1' });
+  
+    const res = await GET(makeReq('/api/quizzes/join/ABC123', 'user42'));
+  
+    expect(PlayerQuiz.findOne).toHaveBeenCalledWith({
+      session_id: 's1',
+      player_id: 'user42',
+    });
     expect(res.status).toBe(400);
-    expect(await res.json()).toEqual({ error: 'Join Code is required' });
+    expect(await res.json()).toEqual({ error: 'Player already joined this session' });
   });
+  
 
   it('404 if session not found', async () => {
     (Session.findOne as jest.Mock).mockReturnValue({
