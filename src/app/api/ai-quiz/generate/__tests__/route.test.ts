@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import 'openai/shims/node';
 
 import { type NextRequest } from "next/server";
@@ -18,7 +15,23 @@ jest.mock("@/models/quizModel");
 jest.mock("@/models/questionModel");
 jest.mock("@/models/userModel");
 jest.mock("jsonwebtoken");
-jest.mock("openai");
+
+// Mock OpenAI
+jest.mock("openai", () => {
+  return jest.fn().mockImplementation(() => ({
+    chat: {
+      completions: {
+        create: jest.fn().mockResolvedValue({
+          choices: [{ message: { content: JSON.stringify([{
+            question_text: "Q1?",
+            options: ["A", "B", "C", "D"],
+            correct_answer: "B",
+          }]) } }],
+        }),
+      },
+    },
+  }));
+});
 
 describe("POST /api/ai-quiz/generate", () => {
   beforeEach(() => {
@@ -53,29 +66,13 @@ describe("POST /api/ai-quiz/generate", () => {
       id: "507f1f77bcf86cd799439011",
     });
 
-    const fakeContent = JSON.stringify([
-      {
-        question_text: "Q1?",
-        options: ["A", "B", "C", "D"],
-        correct_answer: "B",
-      },
-    ]);
-
-    const mockCreate = jest.fn().mockResolvedValue({
-      choices: [{ message: { content: fakeContent } }],
-    });
-
-    (OpenAI as any).mockImplementation(() => ({
-      chat: { completions: { create: mockCreate } },
-    }));
-
     const quizInst = {
       _id: "quiz123",
       total_points: 0,
       save: jest.fn().mockResolvedValue({ _id: "quiz123", total_points: 5 }),
     };
 
-    (Quiz as any).mockImplementation(() => quizInst);
+    (Quiz as jest.MockedClass<typeof Quiz>).mockImplementation(() => quizInst);
 
     (UserNew.findByIdAndUpdate as jest.Mock).mockResolvedValue({});
     (Question.insertMany as jest.Mock).mockResolvedValue([{}]);
@@ -99,7 +96,7 @@ describe("POST /api/ai-quiz/generate", () => {
       message: "AI Quiz generated successfully",
     });
 
-    expect(mockCreate).toHaveBeenCalled();
+    expect(OpenAI).toHaveBeenCalled();
     expect(quizInst.total_points).toBe(5);
   });
 });
