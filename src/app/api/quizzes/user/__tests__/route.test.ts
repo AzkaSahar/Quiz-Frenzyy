@@ -17,8 +17,6 @@ jest.mock('@/models/playerQuizModel', () => ({
 }));
 jest.mock('jsonwebtoken', () => ({ verify: jest.fn() }));
 
-
-
 // Stub NextResponse.json for assertions
 beforeAll(() => {
   // Nothing needed here
