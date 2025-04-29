@@ -4,7 +4,6 @@ import * as dbConfig from '@/dbConfig/dbConfig';
 import UserNew from '@/models/userModel';
 import PlayerQuiz from '@/models/playerQuizModel';
 import jwt from 'jsonwebtoken';
-
 // Mocks
 jest.mock('@/dbConfig/dbConfig', () => ({ connect: jest.fn() }));
 jest.mock('@/models/userModel', () => ({
@@ -22,7 +21,6 @@ beforeAll(() => {
   // Nothing needed here
 });
 afterAll(() => {
-  
 });
 
 describe('GET /api/user/quizzes', () => {
