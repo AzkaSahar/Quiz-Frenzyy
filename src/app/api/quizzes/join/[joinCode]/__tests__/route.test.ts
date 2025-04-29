@@ -17,10 +17,18 @@ jest.mock('@/models/sessionModel', () => {
 });
 
 jest.mock('@/models/playerQuizModel', () => {
-  const m: any = jest.fn(); // Mock constructor
-  m.findOne = jest.fn();    // Static method on model
+  const m: { findOne: jest.Mock; new (): PlayerQuizDoc } = jest.fn() as any;
+
+  // Explicitly mock the `findOne` method to resolve with null (or the necessary mock data)
+  m.findOne = jest.fn().mockResolvedValue(null);
+
+  // Mock the constructor function to return a mock PlayerQuizDoc
+  m.prototype.save = jest.fn().mockResolvedValue(undefined);
+
   return { __esModule: true, default: m };
 });
+
+
 // ——————————————————————————————————————————————————————————————————————————————————————
 
 interface FakeSession {

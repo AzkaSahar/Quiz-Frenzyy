@@ -121,21 +121,30 @@ describe("POST /api/quiz", () => {
   });
 
   it("returns 400 on mongoose validation error", async () => {
-    const ve = new mongoose.Error.ValidationError({} as any);
+    // Create a ValidationError instance with 'undefined' as the argument
+    const ve = new mongoose.Error.ValidationError(undefined);
+  
+    // Correctly assign the 'errors' property with the right type
     ve.errors = {
-      title: new mongoose.Error.ValidatorError({ message: "Invalid title" })
+      title: new mongoose.Error.ValidatorError({
+        message: "Invalid title",
+        path: "title",
+        value: "Bad"
+      })
     };
-
+  
+    // Mock the save method to reject with the ValidationError
     (Quiz as unknown as jest.Mock).mockImplementation(() => ({
       save: jest.fn().mockRejectedValue(ve)
     }));
-
+  
     const res = await POST(
       makeReq({ title: "Bad", description: "D", created_by: "u1", duration: 5, questions: [] })
     );
     expect(res.status).toBe(400);
     expect(await res.json()).toEqual({ error: "Invalid title" });
   });
+  
 
   it("returns 500 on unexpected error", async () => {
     (Quiz as unknown as jest.Mock).mockImplementation(() => ({

@@ -1,207 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="97" failures="0" errors="0" time="13.979">
-  <testsuite name="GET /api/quizzes/results/[sessionId]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:39" time="2.761" tests="6">
-    <testcase classname="GET /api/quizzes/results/[sessionId] 401 when no authToken cookie" name="GET /api/quizzes/results/[sessionId] 401 when no authToken cookie" time="0.02">
+<testsuites name="jest tests" tests="97" failures="0" errors="0" time="15.813">
+  <testsuite name="GET /api/quizzes/results/[sessionId]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:39" time="3.323" tests="6">
+    <testcase classname="GET /api/quizzes/results/[sessionId] 401 when no authToken cookie" name="GET /api/quizzes/results/[sessionId] 401 when no authToken cookie" time="0.028">
     </testcase>
-    <testcase classname="GET /api/quizzes/results/[sessionId] 500 when jwt.verify throws, then 401 when verify returns no id" name="GET /api/quizzes/results/[sessionId] 500 when jwt.verify throws, then 401 when verify returns no id" time="0.042">
+    <testcase classname="GET /api/quizzes/results/[sessionId] 500 when jwt.verify throws, then 401 when verify returns no id" name="GET /api/quizzes/results/[sessionId] 500 when jwt.verify throws, then 401 when verify returns no id" time="0.083">
     </testcase>
-    <testcase classname="GET /api/quizzes/results/[sessionId] 400 when sessionId segment missing" name="GET /api/quizzes/results/[sessionId] 400 when sessionId segment missing" time="0.004">
+    <testcase classname="GET /api/quizzes/results/[sessionId] 400 when sessionId segment missing" name="GET /api/quizzes/results/[sessionId] 400 when sessionId segment missing" time="0.003">
     </testcase>
-    <testcase classname="GET /api/quizzes/results/[sessionId] 404 when Session.findById returns null" name="GET /api/quizzes/results/[sessionId] 404 when Session.findById returns null" time="0.003">
+    <testcase classname="GET /api/quizzes/results/[sessionId] 404 when Session.findById returns null" name="GET /api/quizzes/results/[sessionId] 404 when Session.findById returns null" time="0.006">
     </testcase>
-    <testcase classname="GET /api/quizzes/results/[sessionId] 404 when no PlayerQuiz for user &amp; session" name="GET /api/quizzes/results/[sessionId] 404 when no PlayerQuiz for user &amp; session" time="0.004">
+    <testcase classname="GET /api/quizzes/results/[sessionId] 404 when no PlayerQuiz for user &amp; session" name="GET /api/quizzes/results/[sessionId] 404 when no PlayerQuiz for user &amp; session" time="0.003">
     </testcase>
-    <testcase classname="GET /api/quizzes/results/[sessionId] 200 happy path: trims media_url &amp; leaves completed_at as Date" name="GET /api/quizzes/results/[sessionId] 200 happy path: trims media_url &amp; leaves completed_at as Date" time="0.004">
+    <testcase classname="GET /api/quizzes/results/[sessionId] 200 happy path: trims media_url &amp; leaves completed_at as Date" name="GET /api/quizzes/results/[sessionId] 200 happy path: trims media_url &amp; leaves completed_at as Date" time="0.022">
     </testcase>
   </testsuite>
-  <testsuite name="POST /api/answer" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:39" time="3.58" tests="5">
-    <testcase classname="POST /api/answer returns 400 when required fields are missing" name="POST /api/answer returns 400 when required fields are missing" time="0.022">
+  <testsuite name="POST /api/answer" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:39" time="4.285" tests="5">
+    <testcase classname="POST /api/answer returns 400 when required fields are missing" name="POST /api/answer returns 400 when required fields are missing" time="0.018">
     </testcase>
-    <testcase classname="POST /api/answer returns 404 when question is not found" name="POST /api/answer returns 404 when question is not found" time="0.003">
+    <testcase classname="POST /api/answer returns 404 when question is not found" name="POST /api/answer returns 404 when question is not found" time="0.013">
     </testcase>
-    <testcase classname="POST /api/answer returns 201 and awards points when answer is correct" name="POST /api/answer returns 201 and awards points when answer is correct" time="0.004">
+    <testcase classname="POST /api/answer returns 201 and awards points when answer is correct" name="POST /api/answer returns 201 and awards points when answer is correct" time="0.005">
     </testcase>
     <testcase classname="POST /api/answer returns 201 and awards zero points when answer is incorrect" name="POST /api/answer returns 201 and awards zero points when answer is incorrect" time="0.002">
     </testcase>
-    <testcase classname="POST /api/answer returns 500 on unexpected errors" name="POST /api/answer returns 500 on unexpected errors" time="0.033">
+    <testcase classname="POST /api/answer returns 500 on unexpected errors" name="POST /api/answer returns 500 on unexpected errors" time="0.031">
     </testcase>
   </testsuite>
-  <testsuite name="POST /api/ai-quiz/generate" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:41" time="4.042" tests="1">
-    <testcase classname="POST /api/ai-quiz/generate returns 201 and new quiz ID on success" name="POST /api/ai-quiz/generate returns 201 and new quiz ID on success" time="0.026">
+  <testsuite name="POST /api/ai-quiz/generate" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:41" time="4.991" tests="1">
+    <testcase classname="POST /api/ai-quiz/generate returns 201 and new quiz ID on success" name="POST /api/ai-quiz/generate returns 201 and new quiz ID on success" time="0.019">
     </testcase>
   </testsuite>
-  <testsuite name="POST /api/quiz" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:44" time="2.278" tests="6">
-    <testcase classname="POST /api/quiz returns 400 when title is missing" name="POST /api/quiz returns 400 when title is missing" time="0.003">
+  <testsuite name="POST /api/quiz" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:45" time="2.335" tests="6">
+    <testcase classname="POST /api/quiz returns 400 when title is missing" name="POST /api/quiz returns 400 when title is missing" time="0.002">
     </testcase>
     <testcase classname="POST /api/quiz returns 400 when description is missing" name="POST /api/quiz returns 400 when description is missing" time="0.001">
     </testcase>
-    <testcase classname="POST /api/quiz returns 400 when created_by is missing" name="POST /api/quiz returns 400 when created_by is missing" time="0.002">
+    <testcase classname="POST /api/quiz returns 400 when created_by is missing" name="POST /api/quiz returns 400 when created_by is missing" time="0.001">
     </testcase>
     <testcase classname="POST /api/quiz returns 201 and quiz on success" name="POST /api/quiz returns 201 and quiz on success" time="0.004">
     </testcase>
-    <testcase classname="POST /api/quiz returns 400 on mongoose validation error" name="POST /api/quiz returns 400 on mongoose validation error" time="0.022">
+    <testcase classname="POST /api/quiz returns 400 on mongoose validation error" name="POST /api/quiz returns 400 on mongoose validation error" time="0.02">
     </testcase>
-    <testcase classname="POST /api/quiz returns 500 on unexpected error" name="POST /api/quiz returns 500 on unexpected error" time="0.004">
-    </testcase>
-  </testsuite>
-  <testsuite name="LoginPage Component" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:45" time="1.557" tests="2">
-    <testcase classname="LoginPage Component should display success message and redirect after 2 seconds" name="LoginPage Component should display success message and redirect after 2 seconds" time="0.291">
-    </testcase>
-    <testcase classname="LoginPage Component should display fallback error message on invalid credentials" name="LoginPage Component should display fallback error message on invalid credentials" time="0.097">
+    <testcase classname="POST /api/quiz returns 500 on unexpected error" name="POST /api/quiz returns 500 on unexpected error" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="&lt;HelpCenterPage /&gt;" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:45" time="1.951" tests="6">
-    <testcase classname="&lt;HelpCenterPage /&gt; renders the header and footer" name="&lt;HelpCenterPage /&gt; renders the header and footer" time="0.105">
+  <testsuite name="&lt;HelpCenterPage /&gt;" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:46" time="2.014" tests="6">
+    <testcase classname="&lt;HelpCenterPage /&gt; renders the header and footer" name="&lt;HelpCenterPage /&gt; renders the header and footer" time="0.089">
     </testcase>
-    <testcase classname="&lt;HelpCenterPage /&gt; displays the help center heading" name="&lt;HelpCenterPage /&gt; displays the help center heading" time="0.158">
+    <testcase classname="&lt;HelpCenterPage /&gt; displays the help center heading" name="&lt;HelpCenterPage /&gt; displays the help center heading" time="0.17">
     </testcase>
-    <testcase classname="&lt;HelpCenterPage /&gt; renders all help sections initially collapsed" name="&lt;HelpCenterPage /&gt; renders all help sections initially collapsed" time="0.015">
+    <testcase classname="&lt;HelpCenterPage /&gt; renders all help sections initially collapsed" name="&lt;HelpCenterPage /&gt; renders all help sections initially collapsed" time="0.018">
     </testcase>
-    <testcase classname="&lt;HelpCenterPage /&gt; expands and collapses a section when clicked" name="&lt;HelpCenterPage /&gt; expands and collapses a section when clicked" time="0.184">
+    <testcase classname="&lt;HelpCenterPage /&gt; expands and collapses a section when clicked" name="&lt;HelpCenterPage /&gt; expands and collapses a section when clicked" time="0.188">
     </testcase>
-    <testcase classname="&lt;HelpCenterPage /&gt; allows only one section open at a time" name="&lt;HelpCenterPage /&gt; allows only one section open at a time" time="0.26">
+    <testcase classname="&lt;HelpCenterPage /&gt; allows only one section open at a time" name="&lt;HelpCenterPage /&gt; allows only one section open at a time" time="0.24">
     </testcase>
-    <testcase classname="&lt;HelpCenterPage /&gt; renders the fallback while loading" name="&lt;HelpCenterPage /&gt; renders the fallback while loading" time="0.013">
-    </testcase>
-  </testsuite>
-  <testsuite name="&lt;PageLoader /&gt;" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:47" time="0.748" tests="3">
-    <testcase classname="&lt;PageLoader /&gt; mount hote hi loader show karta hai" name="&lt;PageLoader /&gt; mount hote hi loader show karta hai" time="0.086">
-    </testcase>
-    <testcase classname="&lt;PageLoader /&gt; 400ms ke baad loader hide ho jata hai" name="&lt;PageLoader /&gt; 400ms ke baad loader hide ho jata hai" time="0.02">
-    </testcase>
-    <testcase classname="&lt;PageLoader /&gt; pathname change hone par loader dobara show hota hai" name="&lt;PageLoader /&gt; pathname change hone par loader dobara show hota hai" time="0.015">
+    <testcase classname="&lt;HelpCenterPage /&gt; renders the fallback while loading" name="&lt;HelpCenterPage /&gt; renders the fallback while loading" time="0.02">
     </testcase>
   </testsuite>
-  <testsuite name="PATCH /api/quiz/[quizid]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:46" time="1.356" tests="4">
-    <testcase classname="PATCH /api/quiz/[quizid] returns 404 when quiz not found" name="PATCH /api/quiz/[quizid] returns 404 when quiz not found" time="0.004">
+  <testsuite name="LoginPage Component" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:46" time="1.488" tests="2">
+    <testcase classname="LoginPage Component should display success message and redirect after 2 seconds" name="LoginPage Component should display success message and redirect after 2 seconds" time="0.297">
     </testcase>
-    <testcase classname="PATCH /api/quiz/[quizid] updates quiz and returns 200 without questions" name="PATCH /api/quiz/[quizid] updates quiz and returns 200 without questions" time="0.002">
-    </testcase>
-    <testcase classname="PATCH /api/quiz/[quizid] updates associated questions when provided" name="PATCH /api/quiz/[quizid] updates associated questions when provided" time="0.006">
-    </testcase>
-    <testcase classname="PATCH /api/quiz/[quizid] returns 500 on unexpected errors" name="PATCH /api/quiz/[quizid] returns 500 on unexpected errors" time="0.018">
+    <testcase classname="LoginPage Component should display fallback error message on invalid credentials" name="LoginPage Component should display fallback error message on invalid credentials" time="0.084">
     </testcase>
   </testsuite>
-  <testsuite name="POST /api/users/signup route" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:47" time="1.031" tests="4">
-    <testcase classname="POST /api/users/signup route returns 400 when fields are missing" name="POST /api/users/signup route returns 400 when fields are missing" time="0.002">
+  <testsuite name="&lt;PageLoader /&gt;" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:47" time="1.281" tests="3">
+    <testcase classname="&lt;PageLoader /&gt; mount hote hi loader show karta hai" name="&lt;PageLoader /&gt; mount hote hi loader show karta hai" time="0.17">
+    </testcase>
+    <testcase classname="&lt;PageLoader /&gt; 400ms ke baad loader hide ho jata hai" name="&lt;PageLoader /&gt; 400ms ke baad loader hide ho jata hai" time="0.031">
+    </testcase>
+    <testcase classname="&lt;PageLoader /&gt; pathname change hone par loader dobara show hota hai" name="&lt;PageLoader /&gt; pathname change hone par loader dobara show hota hai" time="0.029">
+    </testcase>
+  </testsuite>
+  <testsuite name="PATCH /api/player-quiz-settings" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:48" time="1.076" tests="4">
+    <testcase classname="PATCH /api/player-quiz-settings returns 400 when playerQuizId is missing" name="PATCH /api/player-quiz-settings returns 400 when playerQuizId is missing" time="0.014">
+    </testcase>
+    <testcase classname="PATCH /api/player-quiz-settings returns 404 when quiz not found" name="PATCH /api/player-quiz-settings returns 404 when quiz not found" time="0.007">
+    </testcase>
+    <testcase classname="PATCH /api/player-quiz-settings returns 200 and updated quiz on success" name="PATCH /api/player-quiz-settings returns 200 and updated quiz on success" time="0.002">
+    </testcase>
+    <testcase classname="PATCH /api/player-quiz-settings returns 500 on unexpected error" name="PATCH /api/player-quiz-settings returns 500 on unexpected error" time="0.012">
+    </testcase>
+  </testsuite>
+  <testsuite name="PATCH /api/quiz/[quizid]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:48" time="1.676" tests="4">
+    <testcase classname="PATCH /api/quiz/[quizid] returns 404 when quiz not found" name="PATCH /api/quiz/[quizid] returns 404 when quiz not found" time="0.002">
+    </testcase>
+    <testcase classname="PATCH /api/quiz/[quizid] updates quiz and returns 200 without questions" name="PATCH /api/quiz/[quizid] updates quiz and returns 200 without questions" time="0.004">
+    </testcase>
+    <testcase classname="PATCH /api/quiz/[quizid] updates associated questions when provided" name="PATCH /api/quiz/[quizid] updates associated questions when provided" time="0.008">
+    </testcase>
+    <testcase classname="PATCH /api/quiz/[quizid] returns 500 on unexpected errors" name="PATCH /api/quiz/[quizid] returns 500 on unexpected errors" time="0.036">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/quiz/[quizid]/question" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:48" time="1.044" tests="3">
+    <testcase classname="POST /api/quiz/[quizid]/question returns 400 if required fields are missing" name="POST /api/quiz/[quizid]/question returns 400 if required fields are missing" time="0.003">
+    </testcase>
+    <testcase classname="POST /api/quiz/[quizid]/question returns 201 when question is created successfully" name="POST /api/quiz/[quizid]/question returns 201 when question is created successfully" time="0.002">
+    </testcase>
+    <testcase classname="POST /api/quiz/[quizid]/question returns 500 on unexpected errors" name="POST /api/quiz/[quizid]/question returns 500 on unexpected errors" time="0.017">
+    </testcase>
+  </testsuite>
+  <testsuite name="GET /api/player-quiz/[playerQuizId]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:49" time="1.026" tests="4">
+    <testcase classname="GET /api/player-quiz/[playerQuizId] 400 when no ID provided" name="GET /api/player-quiz/[playerQuizId] 400 when no ID provided" time="0.002">
+    </testcase>
+    <testcase classname="GET /api/player-quiz/[playerQuizId] 404 when quiz not found" name="GET /api/player-quiz/[playerQuizId] 404 when quiz not found" time="0.005">
+    </testcase>
+    <testcase classname="GET /api/player-quiz/[playerQuizId] 200 and data on success" name="GET /api/player-quiz/[playerQuizId] 200 and data on success" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/player-quiz/[playerQuizId] 500 on unexpected error" name="GET /api/player-quiz/[playerQuizId] 500 on unexpected error" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/users/signup route" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:49" time="1.046" tests="4">
+    <testcase classname="POST /api/users/signup route returns 400 when fields are missing" name="POST /api/users/signup route returns 400 when fields are missing" time="0.003">
     </testcase>
     <testcase classname="POST /api/users/signup route returns 400 if user already exists" name="POST /api/users/signup route returns 400 if user already exists" time="0.001">
     </testcase>
-    <testcase classname="POST /api/users/signup route returns 201 and user on success" name="POST /api/users/signup route returns 201 and user on success" time="0.012">
+    <testcase classname="POST /api/users/signup route returns 201 and user on success" name="POST /api/users/signup route returns 201 and user on success" time="0.001">
     </testcase>
     <testcase classname="POST /api/users/signup route returns 500 on DB error" name="POST /api/users/signup route returns 500 on DB error" time="0.006">
     </testcase>
   </testsuite>
-  <testsuite name="POST /api/quizzes/complete" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:48" time="0.851" tests="4">
-    <testcase classname="POST /api/quizzes/complete 400 if player_quiz_id or answers missing" name="POST /api/quizzes/complete 400 if player_quiz_id or answers missing" time="0.005">
+  <testsuite name="SignupPage Component" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:50" time="1.24" tests="3">
+    <testcase classname="SignupPage Component should display success message and redirect after 2 seconds" name="SignupPage Component should display success message and redirect after 2 seconds" time="0.276">
     </testcase>
-    <testcase classname="POST /api/quizzes/complete 404 if player quiz not found" name="POST /api/quizzes/complete 404 if player quiz not found" time="0.001">
+    <testcase classname="SignupPage Component should display error message if signup fails (e.g., user exists)" name="SignupPage Component should display error message if signup fails (e.g., user exists)" time="0.123">
     </testcase>
-    <testcase classname="POST /api/quizzes/complete 500 if question lookup fails" name="POST /api/quizzes/complete 500 if question lookup fails" time="0.013">
-    </testcase>
-    <testcase classname="POST /api/quizzes/complete 200 happy path: processes answers, updates quiz &amp; user" name="POST /api/quizzes/complete 200 happy path: processes answers, updates quiz &amp; user" time="0.018">
+    <testcase classname="SignupPage Component should display fallback error message on unexpected error" name="SignupPage Component should display fallback error message on unexpected error" time="0.086">
     </testcase>
   </testsuite>
-  <testsuite name="SignupPage Component" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:47" time="0.945" tests="3">
-    <testcase classname="SignupPage Component should display success message and redirect after 2 seconds" name="SignupPage Component should display success message and redirect after 2 seconds" time="0.189">
+  <testsuite name="POST /api/users/login route" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:50" time="1.245" tests="4">
+    <testcase classname="POST /api/users/login route returns 404 if user not found" name="POST /api/users/login route returns 404 if user not found" time="0.008">
     </testcase>
-    <testcase classname="SignupPage Component should display error message if signup fails (e.g., user exists)" name="SignupPage Component should display error message if signup fails (e.g., user exists)" time="0.044">
-    </testcase>
-    <testcase classname="SignupPage Component should display fallback error message on unexpected error" name="SignupPage Component should display fallback error message on unexpected error" time="0.04">
-    </testcase>
-  </testsuite>
-  <testsuite name="POST /api/users/login route" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:48" time="1.138" tests="4">
-    <testcase classname="POST /api/users/login route returns 404 if user not found" name="POST /api/users/login route returns 404 if user not found" time="0.003">
-    </testcase>
-    <testcase classname="POST /api/users/login route returns 401 if password does not match" name="POST /api/users/login route returns 401 if password does not match" time="0.001">
+    <testcase classname="POST /api/users/login route returns 401 if password does not match" name="POST /api/users/login route returns 401 if password does not match" time="0.003">
     </testcase>
     <testcase classname="POST /api/users/login route returns 200 and sets cookie on valid credentials" name="POST /api/users/login route returns 200 and sets cookie on valid credentials" time="0.002">
     </testcase>
-    <testcase classname="POST /api/users/login route returns 500 on DB error" name="POST /api/users/login route returns 500 on DB error" time="0.012">
+    <testcase classname="POST /api/users/login route returns 500 on DB error" name="POST /api/users/login route returns 500 on DB error" time="0.018">
     </testcase>
   </testsuite>
-  <testsuite name="GET /api/player-quiz/[playerQuizId]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:48" time="0.972" tests="4">
-    <testcase classname="GET /api/player-quiz/[playerQuizId] 400 when no ID provided" name="GET /api/player-quiz/[playerQuizId] 400 when no ID provided" time="0.001">
+  <testsuite name="POST /api/quizzes/complete" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:51" time="1.065" tests="4">
+    <testcase classname="POST /api/quizzes/complete 400 if player_quiz_id or answers missing" name="POST /api/quizzes/complete 400 if player_quiz_id or answers missing" time="0.007">
     </testcase>
-    <testcase classname="GET /api/player-quiz/[playerQuizId] 404 when quiz not found" name="GET /api/player-quiz/[playerQuizId] 404 when quiz not found" time="0.004">
+    <testcase classname="POST /api/quizzes/complete 404 if player quiz not found" name="POST /api/quizzes/complete 404 if player quiz not found" time="0.001">
     </testcase>
-    <testcase classname="GET /api/player-quiz/[playerQuizId] 200 and data on success" name="GET /api/player-quiz/[playerQuizId] 200 and data on success" time="0.001">
+    <testcase classname="POST /api/quizzes/complete 500 if question lookup fails" name="POST /api/quizzes/complete 500 if question lookup fails" time="0.018">
     </testcase>
-    <testcase classname="GET /api/player-quiz/[playerQuizId] 500 on unexpected error" name="GET /api/player-quiz/[playerQuizId] 500 on unexpected error" time="0.007">
-    </testcase>
-  </testsuite>
-  <testsuite name="PATCH /api/player-quiz-settings" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:48" time="1.325" tests="4">
-    <testcase classname="PATCH /api/player-quiz-settings returns 400 when playerQuizId is missing" name="PATCH /api/player-quiz-settings returns 400 when playerQuizId is missing" time="0.01">
-    </testcase>
-    <testcase classname="PATCH /api/player-quiz-settings returns 404 when quiz not found" name="PATCH /api/player-quiz-settings returns 404 when quiz not found" time="0.005">
-    </testcase>
-    <testcase classname="PATCH /api/player-quiz-settings returns 200 and updated quiz on success" name="PATCH /api/player-quiz-settings returns 200 and updated quiz on success" time="0.003">
-    </testcase>
-    <testcase classname="PATCH /api/player-quiz-settings returns 500 on unexpected error" name="PATCH /api/player-quiz-settings returns 500 on unexpected error" time="0.013">
+    <testcase classname="POST /api/quizzes/complete 200 happy path: processes answers, updates quiz &amp; user" name="POST /api/quizzes/complete 200 happy path: processes answers, updates quiz &amp; user" time="0.016">
     </testcase>
   </testsuite>
-  <testsuite name="POST /api/quiz/[quizid]/question" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:49" time="1.115" tests="3">
-    <testcase classname="POST /api/quiz/[quizid]/question returns 400 if required fields are missing" name="POST /api/quiz/[quizid]/question returns 400 if required fields are missing" time="0.003">
-    </testcase>
-    <testcase classname="POST /api/quiz/[quizid]/question returns 201 when question is created successfully" name="POST /api/quiz/[quizid]/question returns 201 when question is created successfully" time="0.005">
-    </testcase>
-    <testcase classname="POST /api/quiz/[quizid]/question returns 500 on unexpected errors" name="POST /api/quiz/[quizid]/question returns 500 on unexpected errors" time="0.023">
-    </testcase>
-  </testsuite>
-  <testsuite name="GET /api/users/profile" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:50" time="0.684" tests="5">
-    <testcase classname="GET /api/users/profile returns 401 if no token" name="GET /api/users/profile returns 401 if no token" time="0.002">
+  <testsuite name="GET /api/users/profile" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:51" time="1.035" tests="5">
+    <testcase classname="GET /api/users/profile returns 401 if no token" name="GET /api/users/profile returns 401 if no token" time="0.003">
     </testcase>
     <testcase classname="GET /api/users/profile returns 200 and user on valid token" name="GET /api/users/profile returns 200 and user on valid token" time="0.001">
     </testcase>
-    <testcase classname="PATCH /api/users/profile returns 401 if token invalid" name="PATCH /api/users/profile returns 401 if token invalid" time="0.002">
+    <testcase classname="PATCH /api/users/profile returns 401 if token invalid" name="PATCH /api/users/profile returns 401 if token invalid" time="0.001">
     </testcase>
-    <testcase classname="PATCH /api/users/profile returns 200 and updated user on success" name="PATCH /api/users/profile returns 200 and updated user on success" time="0.001">
+    <testcase classname="PATCH /api/users/profile returns 200 and updated user on success" name="PATCH /api/users/profile returns 200 and updated user on success" time="0.002">
     </testcase>
     <testcase classname="PATCH /api/users/profile returns 500 on DB error" name="PATCH /api/users/profile returns 500 on DB error" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="&lt;Robots /&gt;" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:49" time="1.233" tests="3">
-    <testcase classname="&lt;Robots /&gt; always renders a wrapper div immediately" name="&lt;Robots /&gt; always renders a wrapper div immediately" time="0.121">
+  <testsuite name="&lt;Footer /&gt;" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:51" time="0.922" tests="3">
+    <testcase classname="&lt;Footer /&gt; renders ©…All rights reserved and Powered by NOVA" name="&lt;Footer /&gt; renders ©…All rights reserved and Powered by NOVA" time="0.022">
     </testcase>
-    <testcase classname="&lt;Robots /&gt; renders 60 images after mount" name="&lt;Robots /&gt; renders 60 images after mount" time="0.073">
+    <testcase classname="&lt;Footer /&gt; navigates to /helpcenter when Help Center is clicked" name="&lt;Footer /&gt; navigates to /helpcenter when Help Center is clicked" time="0.08">
     </testcase>
-    <testcase classname="&lt;Robots /&gt; calculates correct styles for the first robot" name="&lt;Robots /&gt; calculates correct styles for the first robot" time="0.064">
-    </testcase>
-  </testsuite>
-  <testsuite name="&lt;Footer /&gt;" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:50" time="0.663" tests="3">
-    <testcase classname="&lt;Footer /&gt; renders ©…All rights reserved and Powered by NOVA" name="&lt;Footer /&gt; renders ©…All rights reserved and Powered by NOVA" time="0.04">
-    </testcase>
-    <testcase classname="&lt;Footer /&gt; navigates to /helpcenter when Help Center is clicked" name="&lt;Footer /&gt; navigates to /helpcenter when Help Center is clicked" time="0.082">
-    </testcase>
-    <testcase classname="&lt;Footer /&gt; does not navigate when Contact is clicked" name="&lt;Footer /&gt; does not navigate when Contact is clicked" time="0.051">
+    <testcase classname="&lt;Footer /&gt; does not navigate when Contact is clicked" name="&lt;Footer /&gt; does not navigate when Contact is clicked" time="0.043">
     </testcase>
   </testsuite>
-  <testsuite name="GET /api/quizzes/session/[sessionId]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:51" time="0.497" tests="5">
-    <testcase classname="GET /api/quizzes/session/[sessionId] 400 when sessionId is missing" name="GET /api/quizzes/session/[sessionId] 400 when sessionId is missing" time="0.002">
+  <testsuite name="GET /api/quizzes/session/[sessionId]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:52" time="0.483" tests="5">
+    <testcase classname="GET /api/quizzes/session/[sessionId] 400 when sessionId is missing" name="GET /api/quizzes/session/[sessionId] 400 when sessionId is missing" time="0.003">
     </testcase>
-    <testcase classname="GET /api/quizzes/session/[sessionId] 404 when session not found" name="GET /api/quizzes/session/[sessionId] 404 when session not found" time="0.008">
+    <testcase classname="GET /api/quizzes/session/[sessionId] 404 when session not found" name="GET /api/quizzes/session/[sessionId] 404 when session not found" time="0.006">
     </testcase>
-    <testcase classname="GET /api/quizzes/session/[sessionId] 400 when session expired (and deactivates it)" name="GET /api/quizzes/session/[sessionId] 400 when session expired (and deactivates it)" time="0.003">
+    <testcase classname="GET /api/quizzes/session/[sessionId] 400 when session expired (and deactivates it)" name="GET /api/quizzes/session/[sessionId] 400 when session expired (and deactivates it)" time="0.002">
     </testcase>
-    <testcase classname="GET /api/quizzes/session/[sessionId] 404 when no questions for this quiz" name="GET /api/quizzes/session/[sessionId] 404 when no questions for this quiz" time="0.011">
+    <testcase classname="GET /api/quizzes/session/[sessionId] 404 when no questions for this quiz" name="GET /api/quizzes/session/[sessionId] 404 when no questions for this quiz" time="0.003">
     </testcase>
-    <testcase classname="GET /api/quizzes/session/[sessionId] 500 on unexpected error" name="GET /api/quizzes/session/[sessionId] 500 on unexpected error" time="0.009">
-    </testcase>
-  </testsuite>
-  <testsuite name="GET /api/quizzes/sessions-list?quizId=" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:51" time="0.432" tests="3">
-    <testcase classname="GET /api/quizzes/sessions-list?quizId= 400 when quizId missing" name="GET /api/quizzes/sessions-list?quizId= 400 when quizId missing" time="0.003">
-    </testcase>
-    <testcase classname="GET /api/quizzes/sessions-list?quizId= 200 returns sorted sessions" name="GET /api/quizzes/sessions-list?quizId= 200 returns sorted sessions" time="0.003">
-    </testcase>
-    <testcase classname="GET /api/quizzes/sessions-list?quizId= 500 on unexpected error" name="GET /api/quizzes/sessions-list?quizId= 500 on unexpected error" time="0.012">
+    <testcase classname="GET /api/quizzes/session/[sessionId] 500 on unexpected error" name="GET /api/quizzes/session/[sessionId] 500 on unexpected error" time="0.011">
     </testcase>
   </testsuite>
-  <testsuite name="POST /api/quizzes/rehost" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:51" time="0.367" tests="1">
-    <testcase classname="POST /api/quizzes/rehost 201 happy path: creates session &amp; updates user" name="POST /api/quizzes/rehost 201 happy path: creates session &amp; updates user" time="0.015">
+  <testsuite name="&lt;Robots /&gt;" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:52" time="0.9" tests="3">
+    <testcase classname="&lt;Robots /&gt; always renders a wrapper div immediately" name="&lt;Robots /&gt; always renders a wrapper div immediately" time="0.044">
+    </testcase>
+    <testcase classname="&lt;Robots /&gt; renders 60 images after mount" name="&lt;Robots /&gt; renders 60 images after mount" time="0.066">
+    </testcase>
+    <testcase classname="&lt;Robots /&gt; calculates correct styles for the first robot" name="&lt;Robots /&gt; calculates correct styles for the first robot" time="0.091">
     </testcase>
   </testsuite>
-  <testsuite name="POST /api/quizzes/session" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:51" time="0.409" tests="6">
-    <testcase classname="POST /api/quizzes/session 400 when quizId is missing" name="POST /api/quizzes/session 400 when quizId is missing" time="0.002">
+  <testsuite name="POST /api/quizzes/session" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:52" time="0.503" tests="6">
+    <testcase classname="POST /api/quizzes/session 400 when quizId is missing" name="POST /api/quizzes/session 400 when quizId is missing" time="0.005">
     </testcase>
     <testcase classname="POST /api/quizzes/session 401 when token is missing" name="POST /api/quizzes/session 401 when token is missing" time="0.001">
     </testcase>
@@ -209,37 +197,49 @@
     </testcase>
     <testcase classname="POST /api/quizzes/session 404 when quiz not found" name="POST /api/quizzes/session 404 when quiz not found" time="0.002">
     </testcase>
-    <testcase classname="POST /api/quizzes/session 201 on success" name="POST /api/quizzes/session 201 on success" time="0.003">
+    <testcase classname="POST /api/quizzes/session 201 on success" name="POST /api/quizzes/session 201 on success" time="0.01">
     </testcase>
-    <testcase classname="POST /api/quizzes/session 500 on unexpected error" name="POST /api/quizzes/session 500 on unexpected error" time="0.007">
+    <testcase classname="POST /api/quizzes/session 500 on unexpected error" name="POST /api/quizzes/session 500 on unexpected error" time="0.006">
     </testcase>
   </testsuite>
-  <testsuite name="GET /api/user/quizzes" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:51" time="0.354" tests="5">
-    <testcase classname="GET /api/user/quizzes 401 when no token" name="GET /api/user/quizzes 401 when no token" time="0.002">
+  <testsuite name="GET /api/quizzes/join/[joinCode]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:52" time="0.592" tests="7">
+    <testcase classname="GET /api/quizzes/join/[joinCode] 400 if no join code in URL" name="GET /api/quizzes/join/[joinCode] 400 if no join code in URL" time="0.013">
     </testcase>
-    <testcase classname="GET /api/user/quizzes 401 when invalid token" name="GET /api/user/quizzes 401 when invalid token" time="0.002">
+    <testcase classname="GET /api/quizzes/join/[joinCode] 404 if session not found" name="GET /api/quizzes/join/[joinCode] 404 if session not found" time="0.002">
     </testcase>
-    <testcase classname="GET /api/user/quizzes 404 when user not found" name="GET /api/user/quizzes 404 when user not found" time="0.001">
+    <testcase classname="GET /api/quizzes/join/[joinCode] 400 if session expired and flips is_active off" name="GET /api/quizzes/join/[joinCode] 400 if session expired and flips is_active off" time="0.002">
+    </testcase>
+    <testcase classname="GET /api/quizzes/join/[joinCode] 401 if user header missing" name="GET /api/quizzes/join/[joinCode] 401 if user header missing" time="0.002">
+    </testcase>
+    <testcase classname="GET /api/quizzes/join/[joinCode] 400 if player already joined" name="GET /api/quizzes/join/[joinCode] 400 if player already joined" time="0.003">
+    </testcase>
+    <testcase classname="GET /api/quizzes/join/[joinCode] 200 happy path: creates a new PlayerQuiz" name="GET /api/quizzes/join/[joinCode] 200 happy path: creates a new PlayerQuiz" time="0.003">
+    </testcase>
+    <testcase classname="GET /api/quizzes/join/[joinCode] 500 if connect() throws" name="GET /api/quizzes/join/[joinCode] 500 if connect() throws" time="0.011">
+    </testcase>
+  </testsuite>
+  <testsuite name="GET /api/quizzes/sessions-list?quizId=" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:53" time="0.493" tests="3">
+    <testcase classname="GET /api/quizzes/sessions-list?quizId= 400 when quizId missing" name="GET /api/quizzes/sessions-list?quizId= 400 when quizId missing" time="0.009">
+    </testcase>
+    <testcase classname="GET /api/quizzes/sessions-list?quizId= 200 returns sorted sessions" name="GET /api/quizzes/sessions-list?quizId= 200 returns sorted sessions" time="0.008">
+    </testcase>
+    <testcase classname="GET /api/quizzes/sessions-list?quizId= 500 on unexpected error" name="GET /api/quizzes/sessions-list?quizId= 500 on unexpected error" time="0.015">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/quizzes/rehost" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:53" time="0.403" tests="1">
+    <testcase classname="POST /api/quizzes/rehost 201 happy path: creates session &amp; updates user" name="POST /api/quizzes/rehost 201 happy path: creates session &amp; updates user" time="0.019">
+    </testcase>
+  </testsuite>
+  <testsuite name="GET /api/user/quizzes" errors="0" failures="0" skipped="0" timestamp="2025-04-29T16:06:53" time="0.308" tests="5">
+    <testcase classname="GET /api/user/quizzes 401 when no token" name="GET /api/user/quizzes 401 when no token" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/user/quizzes 401 when invalid token" name="GET /api/user/quizzes 401 when invalid token" time="0">
+    </testcase>
+    <testcase classname="GET /api/user/quizzes 404 when user not found" name="GET /api/user/quizzes 404 when user not found" time="0">
     </testcase>
     <testcase classname="GET /api/user/quizzes 200 returns hosted and participated quizzes" name="GET /api/user/quizzes 200 returns hosted and participated quizzes" time="0.001">
     </testcase>
-    <testcase classname="GET /api/user/quizzes 500 on unexpected error" name="GET /api/user/quizzes 500 on unexpected error" time="0.022">
-    </testcase>
-  </testsuite>
-  <testsuite name="GET /api/quizzes/join/[joinCode]" errors="0" failures="0" skipped="0" timestamp="2025-04-29T15:51:51" time="0.44" tests="7">
-    <testcase classname="GET /api/quizzes/join/[joinCode] 400 if no join code in URL" name="GET /api/quizzes/join/[joinCode] 400 if no join code in URL" time="0.013">
-    </testcase>
-    <testcase classname="GET /api/quizzes/join/[joinCode] 404 if session not found" name="GET /api/quizzes/join/[joinCode] 404 if session not found" time="0.003">
-    </testcase>
-    <testcase classname="GET /api/quizzes/join/[joinCode] 400 if session expired and flips is_active off" name="GET /api/quizzes/join/[joinCode] 400 if session expired and flips is_active off" time="0.003">
-    </testcase>
-    <testcase classname="GET /api/quizzes/join/[joinCode] 401 if user header missing" name="GET /api/quizzes/join/[joinCode] 401 if user header missing" time="0.01">
-    </testcase>
-    <testcase classname="GET /api/quizzes/join/[joinCode] 400 if player already joined" name="GET /api/quizzes/join/[joinCode] 400 if player already joined" time="0.001">
-    </testcase>
-    <testcase classname="GET /api/quizzes/join/[joinCode] 200 happy path: creates a new PlayerQuiz" name="GET /api/quizzes/join/[joinCode] 200 happy path: creates a new PlayerQuiz" time="0.002">
-    </testcase>
-    <testcase classname="GET /api/quizzes/join/[joinCode] 500 if connect() throws" name="GET /api/quizzes/join/[joinCode] 500 if connect() throws" time="0.01">
+    <testcase classname="GET /api/user/quizzes 500 on unexpected error" name="GET /api/user/quizzes 500 on unexpected error" time="0.015">
     </testcase>
   </testsuite>
 </testsuites>
