@@ -17,30 +17,37 @@ jest.mock('@/models/playerQuizModel', () => ({
 }));
 jest.mock('jsonwebtoken', () => ({ verify: jest.fn() }));
 
+// Define mock response type
+type MockResponse = {
+  status?: number;
+  headers?: HeadersInit;
+  json: () => Promise<any>;
+};
+
 // Stub NextResponse.json for assertions
 beforeAll(() => {
-  jest
-    .spyOn(NextResponse, 'json')
-    .mockImplementation((body, init) => ({
-      status: init?.status,
-      headers: init?.headers,
-      json: async () => body,
-    }) as any);
+  const jsonSpy = jest.spyOn(NextResponse, 'json');
+
+  
 });
+
+
 afterAll(() => {
   (NextResponse.json as jest.Mock).mockRestore();
 });
 
 describe('GET /api/user/quizzes', () => {
   const connectMock = dbConfig.connect as jest.Mock;
-  const findByIdMock = (UserNew.findById as jest.Mock);
-  const findPQMock = (PlayerQuiz.find as jest.Mock);
-  const verifyMock = (jwt.verify as jest.Mock);
+  const findByIdMock = UserNew.findById as jest.Mock;
+  const findPQMock = PlayerQuiz.find as jest.Mock;
+  const verifyMock = jwt.verify as jest.Mock;
 
   function makeReq(token?: string): NextRequest {
     return {
-      cookies: { get: jest.fn().mockReturnValue(token ? { value: token } : undefined) }
-    } as any;
+      cookies: {
+        get: jest.fn().mockReturnValue(token ? { value: token } : undefined),
+      },
+    } as unknown as NextRequest;
   }
 
   beforeEach(() => {
@@ -58,7 +65,6 @@ describe('GET /api/user/quizzes', () => {
     const token = 'bad-token';
     const req = makeReq(token);
 
-    // Instead of throwing, return a decoded object with no `id`
     verifyMock.mockReturnValue({});
 
     const res = await GET(req);
@@ -86,12 +92,24 @@ describe('GET /api/user/quizzes', () => {
     const req = makeReq(token);
 
     verifyMock.mockReturnValue({ id: 'user1' });
-    const hosted = [{ _id: 'q1', title: 'T1', description: 'D1', created_at: new Date() }];
+
+    const hosted = [
+      { _id: 'q1', title: 'T1', description: 'D1', created_at: new Date() },
+    ];
     const user = { hosted_quizzes: hosted };
     const populateUser = jest.fn().mockResolvedValue(user);
     findByIdMock.mockReturnValue({ populate: populateUser });
 
-    const pqDocs = [{ quiz_id: { _id: 'q2', title: 'T2', description: 'D2', created_at: new Date() } }];
+    const pqDocs = [
+      {
+        quiz_id: {
+          _id: 'q2',
+          title: 'T2',
+          description: 'D2',
+          created_at: new Date(),
+        },
+      },
+    ];
     const populatePQ = jest.fn().mockResolvedValue(pqDocs);
     findPQMock.mockReturnValue({ populate: populatePQ });
 

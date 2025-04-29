@@ -26,7 +26,7 @@ beforeAll(() => {
       status: init?.status,
       headers: init?.headers,
       json: async () => body,
-    }) as unknown as NextResponse); // Use `unknown` instead of `any`
+    }) as unknown as NextResponse);
 });
 
 afterAll(() => {
@@ -35,10 +35,10 @@ afterAll(() => {
 
 describe('GET /api/quizzes/results/[sessionId]', () => {
   const connectMock    = dbConfig.connect as jest.Mock;
-  const verifyMock     = (jwt.verify as jest.Mock);
-  const findSession    = (Session.findById as jest.Mock);
-  const findPlayerQuiz = (PlayerQuiz.findOne as jest.Mock);
-  const findAnswers    = (AnswerNew.find as jest.Mock);
+  const verifyMock     = jwt.verify as jest.Mock;
+  const findSession    = Session.findById as jest.Mock;
+  const findPlayerQuiz = PlayerQuiz.findOne as jest.Mock;
+  const findAnswers    = AnswerNew.find as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -53,9 +53,8 @@ describe('GET /api/quizzes/results/[sessionId]', () => {
           name === 'authToken' && token ? { value: token } : undefined,
       },
       nextUrl: { pathname: path },
-    } as NextRequest; // No need to cast to `any`, cast to `NextRequest` directly.
+    } as NextRequest;
   }
-  
 
   it('401 when no authToken cookie', async () => {
     const res = await GET(makeReq('/api/quizzes/results/S1'));
@@ -105,8 +104,6 @@ describe('GET /api/quizzes/results/[sessionId]', () => {
     });
   });
 
-  
-  
   it('200 happy path: trims media_url & leaves completed_at as Date', async () => {
     // session stub
     const fakeEnd = new Date('2025-01-01T00:00:00Z');
@@ -127,7 +124,7 @@ describe('GET /api/quizzes/results/[sessionId]', () => {
     const answersArray = [{
       question_id: {
         question_text: 'Q?',
-        options: ['X','Y'],
+        options: ['X', 'Y'],
         correct_answer: 'X',
         question_type: 'mcq',
         media_url: '  img.png  ',
@@ -137,7 +134,7 @@ describe('GET /api/quizzes/results/[sessionId]', () => {
       points: 0,
     }];
     const chain = { populate: jest.fn().mockResolvedValue(answersArray) };
-    findAnswers.mockReturnValue(chain as any);
+    findAnswers.mockReturnValue(chain as unknown as ReturnType<typeof AnswerNew.find>);
 
     const res = await GET(makeReq('/api/quizzes/results/S1', 'tok'));
     expect(res.status).toBe(200);
@@ -156,7 +153,7 @@ describe('GET /api/quizzes/results/[sessionId]', () => {
         end_time: '2025-01-01T00:00:00.000Z',
         answers: [{
           question_text: 'Q?',
-          options: ['X','Y'],
+          options: ['X', 'Y'],
           correct_answer: 'X',
           submitted_answer: ['Y'],
           is_correct: false,
@@ -167,7 +164,6 @@ describe('GET /api/quizzes/results/[sessionId]', () => {
       },
     });
 
-    // ensure we trimmed and populated
     expect(chain.populate).toHaveBeenCalledWith({
       path: 'question_id',
       select: 'question_text options correct_answer question_type media_url',

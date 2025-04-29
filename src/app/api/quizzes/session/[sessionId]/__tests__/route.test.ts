@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { GET } from '../route';
 import { NextRequest, NextResponse } from 'next/server';
 import * as dbConfig from '@/dbConfig/dbConfig';
@@ -24,7 +27,7 @@ beforeAll(() => {
       status: init?.status,
       headers: init?.headers,
       json: async () => body,
-    }) as unknown as NextResponse); // Use `unknown` instead of `any`
+    }) as unknown as NextResponse); // Safe cast via unknown
 });
 
 afterAll(() => {
@@ -33,14 +36,14 @@ afterAll(() => {
 
 describe('GET /api/quizzes/session/[sessionId]', () => {
   const connectMock = dbConfig.connect as jest.Mock;
-  const findByIdMock = (Session.findById as jest.Mock);
-  const findQMock = (Question.find as jest.Mock);
-  let shuffleMock: jest.SpyInstance;
+  const findByIdMock = Session.findById as jest.Mock;
+  const findQMock = Question.find as jest.Mock;
+  let _shuffleMock: jest.SpyInstance; // Prefix with `_` to silence unused var rule
 
   beforeEach(() => {
     jest.clearAllMocks();
     connectMock.mockResolvedValue(undefined);
-    shuffleMock = jest.spyOn(lodash, 'shuffle').mockImplementation(arr => arr);  // Correctly used
+    _shuffleMock = jest.spyOn(lodash, 'shuffle').mockImplementation(arr => arr); // safe
   });
 
   function makeReq(): NextRequest {
@@ -68,12 +71,18 @@ describe('GET /api/quizzes/session/[sessionId]', () => {
   });
 
   it('400 when session expired (and deactivates it)', async () => {
-    const fakeSession: any = {
+    const fakeSession = {
       _id: 'S1',
       end_time: new Date(Date.now() - 1000),
       is_active: true,
       save: jest.fn(),
       quiz_id: { _id: 'Q1' },
+    } satisfies {
+      _id: string;
+      end_time: Date;
+      is_active: boolean;
+      save: jest.Mock;
+      quiz_id: { _id: string };
     };
     const populateMock = jest.fn().mockResolvedValue(fakeSession);
     findByIdMock.mockReturnValue({ populate: populateMock });
@@ -87,13 +96,20 @@ describe('GET /api/quizzes/session/[sessionId]', () => {
 
   it('404 when no questions for this quiz', async () => {
     const future = new Date(Date.now() + 10000);
-    const fakeSession: any = {
+    const fakeSession = {
       _id: 'S1',
       end_time: future,
       is_active: true,
       save: jest.fn(),
       quiz_id: { _id: 'Q1', duration: 120 },
       start_time: new Date('2025-03-03T10:00:00Z'),
+    } satisfies {
+      _id: string;
+      end_time: Date;
+      is_active: boolean;
+      save: jest.Mock;
+      quiz_id: { _id: string; duration: number };
+      start_time: Date;
     };
     const populateMock = jest.fn().mockResolvedValue(fakeSession);
     findByIdMock.mockReturnValue({ populate: populateMock });
