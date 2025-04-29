@@ -18,14 +18,14 @@ describe("POST /api/quiz/[quizid]/question", () => {
     (dbConfig.connect as jest.Mock).mockResolvedValue(undefined);
   });
 
-  // Type 'Record<string, any>' instead of 'any'
-  function makeReq(body: Record<string, any>): NextRequest {
+  // Replace `any` with `Record<string, unknown>`
+  function makeReq(body: Record<string, unknown>): NextRequest {
     return { 
       json: async () => body 
     } as NextRequest; // Use 'NextRequest' to ensure correct typing
   }
 
-  // Type '{ params: { quizid: string } }' instead of 'any'
+  // Replace `any` with a more specific type
   function makeCtx(id: string): { params: { quizid: string } } {
     return { params: { quizid: id } };
   }

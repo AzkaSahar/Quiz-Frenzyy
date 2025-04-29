@@ -19,8 +19,8 @@ describe("PATCH /api/quiz/[quizid]", () => {
     (connect as jest.Mock).mockResolvedValue(undefined);
   });
 
-  // Specify more type-safe alternatives instead of 'any'
-  function makeReq(body: Record<string, any>): NextRequest {
+  // Specify a more type-safe alternative to 'any'
+  function makeReq(body: Record<string, unknown>): NextRequest {
     return { json: async () => body } as NextRequest; // Cast as NextRequest
   }
 

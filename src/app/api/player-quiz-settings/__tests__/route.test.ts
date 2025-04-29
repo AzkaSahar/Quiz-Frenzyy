@@ -17,8 +17,8 @@ describe("PATCH /api/player-quiz-settings", () => {
     (dbConfig.connect as jest.Mock).mockResolvedValue(undefined);
   });
 
-  // Provide specific types for body and the returned object
-  function makeReq(body: Record<string, any>): NextRequest {
+  // Use Record<string, unknown> instead of any
+  function makeReq(body: Record<string, unknown>): NextRequest {
     return {
       json: async () => body,
     } as NextRequest; // Cast to NextRequest for better type-checking
