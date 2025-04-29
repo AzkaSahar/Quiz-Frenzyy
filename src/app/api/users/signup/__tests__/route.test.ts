@@ -58,7 +58,6 @@ describe('POST /api/users/signup route', () => {
     expect(res.status).toBe(400)
     expect(await res.json()).toEqual({ error: 'User already exists' })
   })
-
   it('returns 201 and user on success', async () => {
     mockedConnect.mockResolvedValue(undefined)
     mockedFindOne.mockResolvedValue(null)
