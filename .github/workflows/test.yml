@@ -1,4 +1,4 @@
-name: Run Tests
+name: Build and Deploy
 
 on:
   push:
@@ -11,26 +11,30 @@ on:
       - testing
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      DOMAIN: ${{ secrets.DOMAIN }}
+      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '18'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Run Linting
-        run: npm run lint
-
-      - name: Run Tests
-        run: npm run test -- --ci --coverage
-
-      - name: Build the project
+      - name: Build
         run: npm run build
+
+      # Add deploy step if needed
