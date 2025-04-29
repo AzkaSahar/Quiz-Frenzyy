@@ -1,3 +1,5 @@
+import "openai/shims/node" 
+
 import { NextRequest, NextResponse } from "next/server";
 import Quiz from "@/models/quizModel";
 import Question from "@/models/questionModel";
@@ -7,7 +9,7 @@ import mongoose from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import OpenAI from "openai";
 
-await connect();
+
 
 interface DecodedToken extends JwtPayload {
   id?: string;
