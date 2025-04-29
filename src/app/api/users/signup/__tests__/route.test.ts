@@ -30,7 +30,6 @@ describe('POST /api/users/signup route', () => {
     } as unknown as NextRequest
 
     const res = await POST(req)
-    // runtime guard to convince TS that res is defined
     if (!res) {
       throw new Error('Expected a Response, but got undefined')
     }
@@ -69,7 +68,14 @@ describe('POST /api/users/signup route', () => {
       username: 'a',
       email: 'a@b.com',
     })
-    MockUser.mockImplementation(() => ({ save: mockSave }))
+
+    type MockedUserInstance = {
+      save: () => Promise<{ _id: string; username: string; email: string }>
+    }
+
+    MockUser.mockImplementation((): MockedUserInstance => ({
+      save: mockSave,
+    }))
 
     const req = {
       json: jest.fn().mockResolvedValue({

@@ -1,5 +1,5 @@
 import { GET } from '../route';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest} from 'next/server';
 import * as dbConfig from '@/dbConfig/dbConfig';
 import UserNew from '@/models/userModel';
 import PlayerQuiz from '@/models/playerQuizModel';

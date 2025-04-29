@@ -1,0 +1,19 @@
+# 1. Node modules & Next.js build output
+node_modules
+.next
+
+# 2. Local env files (secrets)
+.env
+
+# 3. Docker’s own ignore file
+.dockerignore
+
+# 4. Test reports (e.g. junit.xml, test-report.html)
+reports/
+
+# 5. Test & lint configs (still ignored in the image)
+.eslintrc*
+eslint.config.js
+jest.config.js
+jest.setup.js
+test-global.d.ts
