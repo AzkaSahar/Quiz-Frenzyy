@@ -15,13 +15,16 @@ describe("GET /api/player-quiz/[playerQuizId]", () => {
     (dbConfig.connect as jest.Mock).mockResolvedValue(undefined);
   });
 
+  // Mocked NextRequest with only the properties you need (even if it's empty)
   function makeReq(): NextRequest {
-    return {} as any;
+    return {} as unknown as NextRequest;
   }
 
-  function makeCtx(id: string) {
-    return { params: Promise.resolve({ playerQuizId: id }) } as any;
+  // Type-safe mock context with 'params'
+  function makeCtx(id: string): { params: Promise<{ playerQuizId: string }> } {
+    return { params: Promise.resolve({ playerQuizId: id }) };
   }
+  
 
   it("400 when no ID provided", async () => {
     const res = await GET(makeReq(), makeCtx(""));
@@ -43,7 +46,7 @@ describe("GET /api/player-quiz/[playerQuizId]", () => {
     const fake = {
       session_id: "sess42",
       score: 88,
-      completed_at: "2025-04-28T12:00:00Z"
+      completed_at: "2025-04-28T12:00:00Z",
     };
     (PlayerQuiz.findById as jest.Mock).mockResolvedValue(fake);
 
@@ -53,7 +56,7 @@ describe("GET /api/player-quiz/[playerQuizId]", () => {
       success: true,
       session_id: "sess42",
       score: 88,
-      completed_at: "2025-04-28T12:00:00Z"
+      completed_at: "2025-04-28T12:00:00Z",
     });
   });
 

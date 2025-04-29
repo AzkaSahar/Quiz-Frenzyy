@@ -4,33 +4,35 @@
 import 'openai/shims/node';
 import { POST } from "../route";
 import * as dbConfig from "@/dbConfig/dbConfig";
-import Question from "@/models/questionModel";
+import QuestionNews from "@/models/questionModel";
 import { NextRequest } from "next/server";
 
+// Mocking the database connection and QuestionNews model
 jest.mock("@/dbConfig/dbConfig", () => ({ connect: jest.fn() }));
 jest.mock("@/models/questionModel");
 
 describe("POST /api/quiz/[quizid]/question", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // ham connect() stub kar rahe hain taake real database request na ho
+    // Mock the database connection to avoid real DB requests
     (dbConfig.connect as jest.Mock).mockResolvedValue(undefined);
   });
 
-  function makeReq(body: any): NextRequest {
+  // Type 'Record<string, any>' instead of 'any'
+  function makeReq(body: Record<string, any>): NextRequest {
     return { 
       json: async () => body 
-    } as any;
+    } as NextRequest; // Use 'NextRequest' to ensure correct typing
   }
 
-  function makeCtx(id: string) {
-    return { params: { quizid: id } } as any;
+  // Type '{ params: { quizid: string } }' instead of 'any'
+  function makeCtx(id: string): { params: { quizid: string } } {
+    return { params: { quizid: id } };
   }
 
   it("returns 400 if required fields are missing", async () => {
-    // agar question_text ya correct_answer nahin diya, to 400 chahiye
     const res = await POST(
-      makeReq({ question_type: "MCQ", options: ["A","B"] }),
+      makeReq({ question_type: "MCQ", options: ["A", "B"] }),
       makeCtx("507f1f77bcf86cd799439011")
     );
     expect(res.status).toBe(400);
@@ -38,17 +40,19 @@ describe("POST /api/quiz/[quizid]/question", () => {
   });
 
   it("returns 201 when question is created successfully", async () => {
-    // success scenario: new Question() aur save() donon call hon
-    let created: any;
-    (Question as any).mockImplementation(() => {
-      created = { save: jest.fn().mockResolvedValue(undefined) };
-      return created;
-    });
+    // Create a mock for the QuestionNews model
+    const saveMock = jest.fn().mockResolvedValue(undefined); // Mock the save function
+
+    // Mock the QuestionNews constructor to return an object with 'save'
+    const MockedQuestionNews = QuestionNews as jest.MockedClass<typeof QuestionNews>;
+    MockedQuestionNews.mockImplementation(() => ({
+      save: saveMock
+    }));
 
     const payload = {
       question_text: "What is 2+2?",
       question_type: "MCQ",
-      options: ["3","4","5","6"],
+      options: ["3", "4", "5", "6"],
       correct_answer: "4"
     };
 
@@ -57,14 +61,17 @@ describe("POST /api/quiz/[quizid]/question", () => {
       makeCtx("507f1f77bcf86cd799439011")
     );
 
-    // connect() check karo
+    // Check if database connection was called
     expect(dbConfig.connect).toHaveBeenCalled();
-    // model constructor aur save() call hone chahiye
-    expect(Question).toHaveBeenCalledWith({
+    
+    // Check if QuestionNews model constructor was called with correct parameters
+    expect(QuestionNews).toHaveBeenCalledWith({
       quiz_id: "507f1f77bcf86cd799439011",
       ...payload
     });
-    expect(created.save).toHaveBeenCalled();
+
+    // Check if 'save' was called on the created QuestionNews instance
+    expect(saveMock).toHaveBeenCalled();
 
     expect(res.status).toBe(201);
     expect(await res.json()).toEqual({
@@ -74,8 +81,9 @@ describe("POST /api/quiz/[quizid]/question", () => {
   });
 
   it("returns 500 on unexpected errors", async () => {
-    // agar save throw kare, to 500 chahiye
-    (Question as any).mockImplementation(() => ({
+    // Simulate an error in the 'save' method
+    const MockedQuestionNews = QuestionNews as jest.MockedClass<typeof QuestionNews>;
+    MockedQuestionNews.mockImplementation(() => ({
       save: jest.fn().mockRejectedValue(new Error("db crash"))
     }));
 
@@ -83,7 +91,7 @@ describe("POST /api/quiz/[quizid]/question", () => {
       makeReq({
         question_text: "X",
         question_type: "MCQ",
-        options: ["A","B"],
+        options: ["A", "B"],
         correct_answer: "A"
       }),
       makeCtx("507f1f77bcf86cd799439011")

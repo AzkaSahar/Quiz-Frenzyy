@@ -19,11 +19,13 @@ describe("PATCH /api/quiz/[quizid]", () => {
     (connect as jest.Mock).mockResolvedValue(undefined);
   });
 
-  function makeReq(body: any): NextRequest {
-    return { json: async () => body } as any;
+  // Specify more type-safe alternatives instead of 'any'
+  function makeReq(body: Record<string, any>): NextRequest {
+    return { json: async () => body } as NextRequest; // Cast as NextRequest
   }
-  function makeCtx(id: string) {
-    return { params: { quizid: id } } as any;
+
+  function makeCtx(id: string): { params: { quizid: string } } {
+    return { params: { quizid: id } }; // Return a more specific type
   }
 
   it("returns 404 when quiz not found", async () => {

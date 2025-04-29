@@ -17,14 +17,14 @@ describe("PATCH /api/player-quiz-settings", () => {
     (dbConfig.connect as jest.Mock).mockResolvedValue(undefined);
   });
 
-  function makeReq(body: any): NextRequest {
+  // Provide specific types for body and the returned object
+  function makeReq(body: Record<string, any>): NextRequest {
     return {
-      json: async () => body
-    } as any;
+      json: async () => body,
+    } as NextRequest; // Cast to NextRequest for better type-checking
   }
 
   it("returns 400 when playerQuizId is missing", async () => {
-    // agar playerQuizId nahin diya gaya, to status 400 chahiye
     const res = await PATCH(
       makeReq({ avatar: "avatar.png", displayName: "John Doe" })
     );
@@ -33,14 +33,13 @@ describe("PATCH /api/player-quiz-settings", () => {
   });
 
   it("returns 404 when quiz not found", async () => {
-    // jab findByIdAndUpdate null wapas kare, to 404 chahiye
     (PlayerQuiz.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
 
     const res = await PATCH(
       makeReq({
         playerQuizId: "507f1f77bcf86cd799439011",
         avatar: "avatar.png",
-        displayName: "John Doe"
+        displayName: "John Doe",
       })
     );
 
@@ -55,14 +54,13 @@ describe("PATCH /api/player-quiz-settings", () => {
   });
 
   it("returns 200 and updated quiz on success", async () => {
-    // success scenario: model ek updated object wapas kare
     const fakeQuiz = {
       _id: "quiz123",
       session_id: "sess1",
       score: 42,
       completed_at: "2025-04-28T12:00:00Z",
       avatar: "avatar.png",
-      displayName: "John Doe"
+      displayName: "John Doe",
     };
     (PlayerQuiz.findByIdAndUpdate as jest.Mock).mockResolvedValue(fakeQuiz);
 
@@ -70,7 +68,7 @@ describe("PATCH /api/player-quiz-settings", () => {
       makeReq({
         playerQuizId: "507f1f77bcf86cd799439011",
         avatar: "avatar.png",
-        displayName: "John Doe"
+        displayName: "John Doe",
       })
     );
 
@@ -78,12 +76,11 @@ describe("PATCH /api/player-quiz-settings", () => {
     expect(await res.json()).toEqual({
       success: true,
       message: "Player quiz updated successfully",
-      playerQuiz: fakeQuiz
+      playerQuiz: fakeQuiz,
     });
   });
 
   it("returns 500 on unexpected error", async () => {
-    // agar DB mein koi crash ho jaye, to 500 chahiye
     (PlayerQuiz.findByIdAndUpdate as jest.Mock).mockImplementation(() => {
       throw new Error("db crash");
     });
@@ -92,7 +89,7 @@ describe("PATCH /api/player-quiz-settings", () => {
       makeReq({
         playerQuizId: "507f1f77bcf86cd799439011",
         avatar: "avatar.png",
-        displayName: "John Doe"
+        displayName: "John Doe",
       })
     );
 

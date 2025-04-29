@@ -1,45 +1,96 @@
-/**
- * @jest-environment node
- */
 import 'openai/shims/node';
 import { POST } from '../route';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
+import { Model } from 'mongoose';  // Import Mongoose Model
 import * as dbConfig from '@/dbConfig/dbConfig';
 import Quiz from '@/models/quizModel';
 import Session from '@/models/sessionModel';
 import UserNew from '@/models/userModel';
 import jwt from 'jsonwebtoken';
 
-// convince TS that Session is a jest.Mock
-const SessionMock = Session as unknown as jest.Mock;
+// ────────────────────────────────────────────────────────────────────────────────
+// Mock Cookies Object
+// ────────────────────────────────────────────────────────────────────────────────
+const mockCookies = {
+  get(name: string) {
+    return name === 'authToken' ? { name, value: 'mock-token' } : undefined;
+  },
+  has(name: string) {
+    return name === 'authToken';
+  },
+  set(name: string, value: string) {
+    return this;
+  },
+  delete(name: string) {
+    return this;
+  },
+  getAll(name: string) {
+    return [];
+  },
+  clear() {
+    return this;
+  },
+  size: 1,
+  [Symbol.iterator]: function* () {
+    yield ['authToken', { name: 'authToken', value: 'mock-token' }];
+  },
+};
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Request Factory
+// ────────────────────────────────────────────────────────────────────────────────
+function makeReq(body: object, token?: string): Partial<NextRequest> {
+  const cookies: RequestCookies = {
+    ...mockCookies,
+    get(name: string) {
+      return name === 'authToken' && token ? { name, value: token } : undefined;
+    },
+    has(name: string) {
+      return name === 'authToken' && !!token;
+    },
+  } as unknown as RequestCookies;
+
+  return {
+    json: async () => body,
+    cookies,
+  };
+}
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Mocks
 // ────────────────────────────────────────────────────────────────────────────────
 jest.mock('@/dbConfig/dbConfig', () => ({ connect: jest.fn() }));
-jest.mock(
-  '@/models/quizModel',
-  () => ({ __esModule: true, default: { findById: jest.fn() } })
-);
-jest.mock('@/models/sessionModel', () => {
-  // Make Session a jest.fn() so .mock.calls exists
-  const m = jest.fn((data: any) => ({
-    ...data,
+
+jest.mock('@/models/quizModel', () => ({
+  __esModule: true,
+  default: { findById: jest.fn() },
+}));
+
+jest.mock('@/models/sessionModel', () => ({
+  __esModule: true,
+  default: jest.fn().mockImplementation(() => ({
     _id: 'NEW_SESSION_ID',
     join_code: 'JOIN123',
+    start_time: new Date(),
+    end_time: new Date(),
+    is_active: true,
     save: jest.fn().mockResolvedValue(undefined),
-  }));
-  return { __esModule: true, default: m };
-});
-jest.mock(
-  '@/models/userModel',
-  () => ({ __esModule: true, default: { findByIdAndUpdate: jest.fn() } })
-);
-jest.mock('jsonwebtoken', () => ({ verify: jest.fn() }));
+  })),
+}));
+
+jest.mock('@/models/userModel', () => ({
+  __esModule: true,
+  default: { findByIdAndUpdate: jest.fn() },
+}));
+
+jest.mock('jsonwebtoken', () => ({
+  verify: jest.fn(),
+}));
 
 // ────────────────────────────────────────────────────────────────────────────────
-// Monkey-patch NextResponse.json so we can inspect status & body
+// Monkey Patch NextResponse
 // ────────────────────────────────────────────────────────────────────────────────
 beforeAll(() => {
   jest
@@ -48,8 +99,9 @@ beforeAll(() => {
       status: init?.status,
       headers: init?.headers,
       json: async () => body,
-    } as any));
+    }) as unknown as NextResponse);
 });
+
 afterAll(() => {
   (NextResponse.json as jest.Mock).mockRestore();
 });
@@ -64,34 +116,21 @@ describe('POST /api/quizzes/rehost', () => {
     (jwt.verify as jest.Mock).mockReturnValue({ id: 'USER123' });
   });
 
-  function makeReq(body: any, token?: string): NextRequest {
-    return {
-      json: async () => body,
-      cookies: {
-        get: (name: string) =>
-          name === 'authToken' && token ? { value: token } : undefined,
-      },
-    } as any as NextRequest;
-  }
-
   it('201 happy path: creates session & updates user', async () => {
-    // 1) stub Quiz.findById and UserNew.findByIdAndUpdate
     (Quiz.findById as jest.Mock).mockResolvedValue({ _id: 'Q1', duration: 20 });
     (UserNew.findByIdAndUpdate as jest.Mock).mockResolvedValue({
       _id: 'USER123',
       hosted_quizzes: ['Q1'],
     });
-
-    // 2) call POST handler
-    const req = makeReq({ quizId: 'Q1', duration: 15 }, 'tok');
+  
+    const req = makeReq({ quizId: 'Q1', duration: 15 }, 'tok') as NextRequest;
     const res = await POST(req);
-
-    // 3) verify connect, token decode, quiz lookup
+  
     expect(dbConfig.connect).toHaveBeenCalled();
     expect(jwt.verify).toHaveBeenCalledWith('tok', process.env.JWT_SECRET!);
     expect(Quiz.findById).toHaveBeenCalledWith('Q1');
-
-    // 4) verify Session was constructed with the right fields
+  
+    const SessionMock = Session as unknown as jest.Mock<Model<unknown, {}, {}, {}, unknown>>;
     expect(SessionMock.mock.calls[0][0]).toEqual(
       expect.objectContaining({
         quiz_id: 'Q1',
@@ -100,19 +139,16 @@ describe('POST /api/quizzes/rehost', () => {
         end_time: expect.any(Date),
       })
     );
-
-    // 5) grab the instance returned by our mock constructor and check .save()
-    const sessionInstance = SessionMock.mock.results[0].value as any;
+  
+    const sessionInstance = SessionMock.mock.results[0].value;
     expect(sessionInstance.save).toHaveBeenCalled();
-
-    // 6) verify user update
+  
     expect(UserNew.findByIdAndUpdate).toHaveBeenCalledWith(
       'USER123',
       { $addToSet: { hosted_quizzes: 'Q1' } },
       { new: true }
     );
-
-    // 7) verify response
+  
     expect(res.status).toBe(201);
     expect(await res.json()).toEqual({
       success: true,
@@ -121,6 +157,5 @@ describe('POST /api/quizzes/rehost', () => {
       message: 'New session created successfully',
     });
   });
-
-  // you can add more tests for 400, 401, 404, 500 here as needed
+  
 });

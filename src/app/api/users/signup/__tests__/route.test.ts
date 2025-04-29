@@ -4,49 +4,111 @@
 import { POST } from '../route'
 import { connect } from '@/dbConfig/dbConfig'
 import User from '@/models/userModel'
+import { NextRequest } from 'next/server'
 
 jest.mock('@/dbConfig/dbConfig', () => ({ connect: jest.fn() }))
 jest.mock('@/models/userModel')
 
+const mockedConnect = connect as jest.Mock
+const mockedFindOne = User.findOne as jest.Mock
+const MockUser = User as unknown as jest.Mock
+
 describe('POST /api/users/signup route', () => {
-  beforeEach(() => { (connect as jest.Mock).mockClear(); (User.findOne as jest.Mock).mockClear() })
+  beforeEach(() => {
+    mockedConnect.mockClear()
+    mockedFindOne.mockClear()
+    MockUser.mockClear()
+  })
 
   it('returns 400 when fields are missing', async () => {
-    const req = { json: jest.fn().mockResolvedValue({ username:'', email:'', password:'' }) } as any
+    const req = {
+      json: jest.fn().mockResolvedValue({
+        username: '',
+        email: '',
+        password: '',
+      }),
+    } as unknown as NextRequest
+
     const res = await POST(req)
-    expect(res!.status).toBe(400)
-    expect(await res!.json()).toEqual({ error: 'All fields are required' })
+    // runtime guard to convince TS that res is defined
+    if (!res) {
+      throw new Error('Expected a Response, but got undefined')
+    }
+
+    expect(res.status).toBe(400)
+    expect(await res.json()).toEqual({ error: 'All fields are required' })
   })
 
   it('returns 400 if user already exists', async () => {
-    ;(connect as jest.Mock).mockResolvedValue(null)
-    ;(User.findOne as jest.Mock).mockResolvedValue({ _id: 'u1' })
-    const req = { json: jest.fn().mockResolvedValue({ username:'a', email:'a@b.com', password:'p' }) } as any
+    mockedConnect.mockResolvedValue(undefined)
+    mockedFindOne.mockResolvedValue({ _id: 'u1' })
+
+    const req = {
+      json: jest.fn().mockResolvedValue({
+        username: 'a',
+        email: 'a@b.com',
+        password: 'p',
+      }),
+    } as unknown as NextRequest
+
     const res = await POST(req)
-    expect(res!.status).toBe(400)
-    expect(await res!.json()).toEqual({ error: 'User already exists' })
+    if (!res) {
+      throw new Error('Expected a Response, but got undefined')
+    }
+
+    expect(res.status).toBe(400)
+    expect(await res.json()).toEqual({ error: 'User already exists' })
   })
 
   it('returns 201 and user on success', async () => {
-    ;(connect as jest.Mock).mockResolvedValue(null)
-    ;(User.findOne as jest.Mock).mockResolvedValue(null)
-    const mockSave = jest.fn().mockResolvedValue({ _id:'u1',username:'a',email:'a@b.com' })
-    ;(User as any).mockImplementation(() => ({ save: mockSave }))
-    const req = { json: jest.fn().mockResolvedValue({ username:'a', email:'a@b.com', password:'p' }) } as any
+    mockedConnect.mockResolvedValue(undefined)
+    mockedFindOne.mockResolvedValue(null)
+
+    const mockSave = jest.fn().mockResolvedValue({
+      _id: 'u1',
+      username: 'a',
+      email: 'a@b.com',
+    })
+    MockUser.mockImplementation(() => ({ save: mockSave }))
+
+    const req = {
+      json: jest.fn().mockResolvedValue({
+        username: 'a',
+        email: 'a@b.com',
+        password: 'p',
+      }),
+    } as unknown as NextRequest
+
     const res = await POST(req)
-    expect(res!.status).toBe(201)
-    expect(await res!.json()).toEqual({
+    if (!res) {
+      throw new Error('Expected a Response, but got undefined')
+    }
+
+    expect(res.status).toBe(201)
+    expect(await res.json()).toEqual({
       message: 'User created successfully',
       success: true,
-      user: { _id:'u1',username:'a',email:'a@b.com' }
+      user: { _id: 'u1', username: 'a', email: 'a@b.com' },
     })
   })
 
   it('returns 500 on DB error', async () => {
-    ;(connect as jest.Mock).mockRejectedValue(new Error('failDB'))
-    const req = { json: jest.fn().mockResolvedValue({ username:'a', email:'a@b.com', password:'p' }) } as any
+    mockedConnect.mockRejectedValue(new Error('failDB'))
+
+    const req = {
+      json: jest.fn().mockResolvedValue({
+        username: 'a',
+        email: 'a@b.com',
+        password: 'p',
+      }),
+    } as unknown as NextRequest
+
     const res = await POST(req)
-    expect(res!.status).toBe(500)
-    expect(await res!.json()).toEqual({ error: 'failDB' })
+    if (!res) {
+      throw new Error('Expected a Response, but got undefined')
+    }
+
+    expect(res.status).toBe(500)
+    expect(await res.json()).toEqual({ error: 'failDB' })
   })
 })

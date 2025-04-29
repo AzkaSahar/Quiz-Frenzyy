@@ -18,12 +18,15 @@ jest.mock('@/models/questionModel', () => ({
 
 // Stub NextResponse.json for test assertions
 beforeAll(() => {
-  jest.spyOn(NextResponse, 'json').mockImplementation((body, init) => ({
-    status: init?.status,
-    headers: init?.headers,
-    json: async () => body,
-  }) as any);
+  jest
+    .spyOn(NextResponse, 'json')
+    .mockImplementation((body, init) => ({
+      status: init?.status,
+      headers: init?.headers,
+      json: async () => body,
+    }) as unknown as NextResponse); // Use `unknown` instead of `any`
 });
+
 afterAll(() => {
   (NextResponse.json as jest.Mock).mockRestore();
 });
@@ -37,12 +40,13 @@ describe('GET /api/quizzes/session/[sessionId]', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     connectMock.mockResolvedValue(undefined);
-    shuffleMock = jest.spyOn(lodash, 'shuffle').mockImplementation(arr => arr);
+    shuffleMock = jest.spyOn(lodash, 'shuffle').mockImplementation(arr => arr);  // Correctly used
   });
 
   function makeReq(): NextRequest {
-    return {} as any;
+    return {} as NextRequest;
   }
+
   function makeCtx(id?: string) {
     return { params: Promise.resolve({ sessionId: id! }) };
   }
