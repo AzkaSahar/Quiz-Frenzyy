@@ -7,7 +7,6 @@ import * as dbConfig from '@/dbConfig/dbConfig';
 import Session from '@/models/sessionModel';
 import PlayerQuiz from '@/models/playerQuizModel';
 import type { NextRequest } from 'next/server';
-import { Model, Document } from 'mongoose';
 
 // ————————————————————————————————————————————————————— mocks —————————————————————————————————————————————————————
 jest.mock('@/dbConfig/dbConfig', () => ({ connect: jest.fn() }));

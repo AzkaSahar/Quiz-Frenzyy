@@ -3,7 +3,7 @@ import { POST } from '../route';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
-import { Model } from 'mongoose';  // Import Mongoose Model
+import { Model } from 'mongoose';
 import * as dbConfig from '@/dbConfig/dbConfig';
 import Quiz from '@/models/quizModel';
 import Session from '@/models/sessionModel';
@@ -14,19 +14,19 @@ import jwt from 'jsonwebtoken';
 // Mock Cookies Object
 // ────────────────────────────────────────────────────────────────────────────────
 const mockCookies = {
-  get(name: string) {
-    return name === 'authToken' ? { name, value: 'mock-token' } : undefined;
+  get(_name: string) {
+    return _name === 'authToken' ? { name: _name, value: 'mock-token' } : undefined;
   },
-  has(name: string) {
-    return name === 'authToken';
+  has(_name: string) {
+    return _name === 'authToken';
   },
-  set(name: string, value: string) {
+  set(_name: string, _value: string) {
     return this;
   },
-  delete(name: string) {
+  delete(_name: string) {
     return this;
   },
-  getAll(name: string) {
+  getAll(_name: string) {
     return [];
   },
   clear() {
@@ -44,11 +44,11 @@ const mockCookies = {
 function makeReq(body: object, token?: string): Partial<NextRequest> {
   const cookies: RequestCookies = {
     ...mockCookies,
-    get(name: string) {
-      return name === 'authToken' && token ? { name, value: token } : undefined;
+    get(_name: string) {
+      return _name === 'authToken' && token ? { name: _name, value: token } : undefined;
     },
-    has(name: string) {
-      return name === 'authToken' && !!token;
+    has(_name: string) {
+      return _name === 'authToken' && !!token;
     },
   } as unknown as RequestCookies;
 
@@ -122,15 +122,15 @@ describe('POST /api/quizzes/rehost', () => {
       _id: 'USER123',
       hosted_quizzes: ['Q1'],
     });
-  
+
     const req = makeReq({ quizId: 'Q1', duration: 15 }, 'tok') as NextRequest;
     const res = await POST(req);
-  
+
     expect(dbConfig.connect).toHaveBeenCalled();
     expect(jwt.verify).toHaveBeenCalledWith('tok', process.env.JWT_SECRET!);
     expect(Quiz.findById).toHaveBeenCalledWith('Q1');
-  
-    const SessionMock = Session as unknown as jest.Mock<Model<unknown, {}, {}, {}, unknown>>;
+
+    const SessionMock = Session as unknown as jest.Mock<Model<Record<string, unknown>>>;
     expect(SessionMock.mock.calls[0][0]).toEqual(
       expect.objectContaining({
         quiz_id: 'Q1',
@@ -139,16 +139,16 @@ describe('POST /api/quizzes/rehost', () => {
         end_time: expect.any(Date),
       })
     );
-  
+
     const sessionInstance = SessionMock.mock.results[0].value;
     expect(sessionInstance.save).toHaveBeenCalled();
-  
+
     expect(UserNew.findByIdAndUpdate).toHaveBeenCalledWith(
       'USER123',
       { $addToSet: { hosted_quizzes: 'Q1' } },
       { new: true }
     );
-  
+
     expect(res.status).toBe(201);
     expect(await res.json()).toEqual({
       success: true,
@@ -157,5 +157,4 @@ describe('POST /api/quizzes/rehost', () => {
       message: 'New session created successfully',
     });
   });
-  
 });
