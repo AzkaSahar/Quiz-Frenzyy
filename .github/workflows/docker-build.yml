@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/your-app-name:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/quiz-frenzyy:latest
           build-args: |
             MONGO_URI=${{ secrets.MONGO_URI }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
