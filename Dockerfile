@@ -7,8 +7,9 @@ RUN npm install
 
 COPY . .
 
-# Copy the .env file that is created from GitHub secret
-COPY .env .env
+# Inject .env file content passed via build arg
+ARG ENV_CONTENT
+RUN echo "$ENV_CONTENT" > .env
 
 EXPOSE 3000
 
