@@ -1,30 +1,25 @@
-# ─── Stage 1: Builder ───────────────────────────────────────────────────────────
-FROM node:18-alpine AS builder
+# Dockerfile
+
+# Use a specific base image (adjust according to your requirements)
+FROM node:16
+
+# Set the working directory in the container
 WORKDIR /app
 
-# 1. Install all deps & build
+# Copy package.json and package-lock.json (or yarn.lock) for npm/yarn install
 COPY package*.json ./
-RUN npm ci
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app files into the container
 COPY . .
-RUN npm run build
 
-# 2. Prune devDependencies so node_modules contains only prodDeps
-RUN npm prune --production
+# Copy the .env.production file into the container
+COPY .env.production .env
 
-# ─── Stage 2: Runner ────────────────────────────────────────────────────────────
-FROM node:18-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-
-# 3. Copy package files & pruned node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-
-# 4. Copy compiled output & config
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.ts ./next.config.ts
-
-# 5. Expose & launch
+# Expose the app port
 EXPOSE 3000
-CMD ["npm","start"]
+
+# Run the application
+CMD ["npm", "start"]
