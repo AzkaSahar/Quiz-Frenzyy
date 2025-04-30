@@ -7,8 +7,8 @@ RUN npm install
 
 COPY . .
 
-# Rename env file inside container
-COPY .env.production .env
+# Copy the .env file that is created from GitHub secret
+COPY .env .env
 
 EXPOSE 3000
 
