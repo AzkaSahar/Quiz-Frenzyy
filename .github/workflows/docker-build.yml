@@ -30,7 +30,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: .  # Use the current directory as context
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/quiz-frenzyy:latest
           provenance: true
@@ -48,8 +48,7 @@ jobs:
             CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
             CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
             CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
-          build-contexts: |
-            github.com=${{ github.repository }}
+          build-context: "github.com/${{ github.repository }}"
 
       - name: Image digest
         run: echo "Image digest is ${{ steps.docker_build.outputs.digest }}"
