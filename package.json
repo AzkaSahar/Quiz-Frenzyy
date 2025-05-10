@@ -61,7 +61,8 @@
     "node-fetch": "^3.3.2",
     "postcss": "^8.5.3",
     "ts-jest": "^29.3.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "whatwg-fetch": "^3.6.20"
   },
   "eslintConfig": {
     "extends": "next",

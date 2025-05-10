@@ -10,8 +10,6 @@ function QuizCompleteContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const player_quiz_id = searchParams.get("player_quiz_id");
-
-  const [, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [score, setScore] = useState<number | null>(null);
@@ -25,14 +23,12 @@ function QuizCompleteContent() {
         setSessionId("test-session-123");
         setScore(95); // Fake Score
         setCompletedAt(new Date().toLocaleString());
-        setLoading(false);
         return;
       }
 
       // Fetch real quiz data
       const response = await fetch(`/api/player-quiz/${player_quiz_id}`);
       const data = await response.json();
-      setLoading(false);
 
       if (data.success) {
         setMessage("Quiz completed successfully!");
