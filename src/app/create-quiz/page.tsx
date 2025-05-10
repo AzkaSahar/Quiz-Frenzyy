@@ -292,16 +292,19 @@ export default function CreateQuiz() {
                       className="file:cursor-pointer file:hover:text-[#ec5f80] file:text-[#ec5f80] file:font-medium file:px-4 file:py-2 file:rounded-full file:hover:bg-white transition-all file:border file:border-[#ec5f80] text-gray-300 w-auto px-3 py-2 mb-2"
                     />
                     {q.media_url && (
-                      <Image
-                        src={q.media_url}
-                        alt="Uploaded"
-                        width={100}
-                        height={100}
-                        className="rounded-lg mb-2 border-[#ec5f80] shadow-lg"
-                      />
+                      <div className="flex justify-center mb-2">
+                        <Image
+                          src={q.media_url}
+                          alt="Uploaded"
+                          width={100}
+                          height={100}
+                          className="rounded-lg border-[#ec5f80] shadow-lg"
+                        />
+                      </div>
                     )}
                   </>
                 )}
+
                 {/* Options for MCQ, Ranking, Image */}
                 {(q.question_type === "MCQ" || q.question_type === "Ranking" || q.question_type === "Image") && (
                   <div className="mt-2">
