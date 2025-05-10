@@ -1,13 +1,14 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import type { DropResult } from "@hello-pangea/dnd";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Image from "next/image";
+
 
 interface Question {
   _id: string;
@@ -22,8 +23,8 @@ interface Question {
 interface QuizInfo {
   title: string;
   description: string;
-  duration?: number;
-  start_time: string;
+  duration?: number; // duration in minutes
+  start_time: string; // ISO format timestamp
 }
 
 function PlayQuizContent() {
@@ -35,18 +36,20 @@ function PlayQuizContent() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [quizInfo, setQuizInfo] = useState<QuizInfo | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  // Since we use global loading via Suspense, we assume that once data is ready, we can show the quiz.
+  // Set introStage to "quiz" once data is ready.
   const [introStage, setIntroStage] = useState<"quiz">("quiz");
+  const [submitting, setSubmitting] = useState(false);
 
   const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: string }>({});
   const [rankingAnswers, setRankingAnswers] = useState<{ [qId: string]: string[] }>({});
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);  // Track the submission state
-
   // ----------------- FETCH QUIZ -----------------
   useEffect(() => {
     async function fetchQuizData() {
       if (!session_id || !player_quiz_id) {
+        // Redirect if IDs are missing
         router.push("/");
         return;
       }
@@ -56,6 +59,8 @@ function PlayQuizContent() {
         const data = await res.json();
         if (data.success) {
           setQuestions(data.questions || []);
+
+          // Shuffle ranking answers for Ranking type questions
           const initialRankingAnswers: { [qId: string]: string[] } = {};
           (data.questions || []).forEach((q: Question) => {
             if (q.question_type === "Ranking") {
@@ -68,18 +73,21 @@ function PlayQuizContent() {
           setQuizInfo({
             title: data.quiz?.title || "Untitled Quiz",
             description: data.quiz?.description || "",
-            duration: data.duration || 5,
+            duration: data.duration || 5, // fallback to 5 min
             start_time: data.start_time || new Date().toISOString(),
           });
 
+          // Calculate remaining time based on start_time and duration
           const quizDurationSeconds = (data.duration || 5) * 60;
           const startTime = new Date(data.start_time || new Date().toISOString());
           const now = new Date();
           const elapsedSeconds = Math.floor((now.getTime() - startTime.getTime()) / 1000);
           const remainingSeconds = quizDurationSeconds - elapsedSeconds;
           setTimeLeft(remainingSeconds > 0 ? remainingSeconds : 0);
+          // We don’t need to delay quiz start if using global loader.
           setIntroStage("quiz");
         } else {
+          // If no questions found, you can redirect or handle as needed.
           router.push("/");
         }
       } catch (error) {
@@ -130,10 +138,7 @@ function PlayQuizContent() {
   };
 
   const submitQuiz = async () => {
-    if (isSubmitting) return;  // Prevent multiple submissions
-
-    setIsSubmitting(true);  // Set submitting state to true
-
+    setSubmitting(true);
     const answersArray = questions.map((q) => ({
       question_id: q._id,
       player_quiz_id,
@@ -151,16 +156,16 @@ function PlayQuizContent() {
       });
       const data = await res.json();
       if (data.success) {
-        router.push(`/quiz-complete?player_quiz_id=${player_quiz_id}`);
-      } else {
-        alert("Submission failed.");
-      }
-    } catch {
-      alert("Error submitting quiz.");
-    } finally {
-      setIsSubmitting(false);  // Reset submitting state
+      router.push(`/quiz-complete?player_quiz_id=${player_quiz_id}`);
+    } else {
+      alert("Submission failed.");
     }
-  };
+  } catch {
+    alert("Error submitting quiz.");
+  } finally {
+    setSubmitting(false); // Reset submitting status after submission attempt
+  }
+};
 
   const renderQuestion = (question: Question) => {
     switch (question.question_type) {
@@ -251,6 +256,7 @@ function PlayQuizContent() {
   const currentQuestion = questions[currentQuestionIndex];
   const progressPercent = questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
 
+  // Do not render anything until questions and quizInfo are loaded.
   if (!quizInfo || questions.length === 0 || timeLeft === null) {
     return null;
   }
@@ -260,45 +266,85 @@ function PlayQuizContent() {
       <Header />
       <div className="flex justify-center items-center min-h-screen px-4 py-6">
         <div className="bg-[#242424] p-6 sm:p-10 rounded-[30px] shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl text-center">
-          {introStage === "quiz" && (
-            <>
-              <h2 className="text-3xl text-[#ec5f80] font-semibold mb-4">{quizInfo.title}</h2>
-              <p className="text-gray-400 mb-6">{quizInfo.description}</p>
-              <p className="text-xl text-white">
-                Time Left: {formatTime(timeLeft)}
-              </p>
-              <div className="mt-6 mb-4">{renderQuestion(currentQuestion)}</div>
-              <div className="flex justify-between items-center mt-4">
-                <button
-                  disabled={isSubmitting}
-                  onClick={() => {
-                    if (currentQuestionIndex < questions.length - 1) {
-                      setCurrentQuestionIndex(currentQuestionIndex + 1);
-                    }
-                  }}
-                  className={`text-sm sm:text-base px-4 py-2 rounded-full ${
-                    currentQuestionIndex === 0 ? "invisible" : "bg-[#ec5f80] text-white"
-                  }`}
-                >
-                  Previous
-                </button>
+          <div className="flex-1 bg-[#333436] rounded-[30px] p-6 sm:p-10">
 
-                <button
-                  disabled={isSubmitting}
-                  onClick={() => {
-                    if (currentQuestionIndex < questions.length - 1) {
-                      setCurrentQuestionIndex(currentQuestionIndex + 1);
-                    } else {
-                      submitQuiz();
-                    }
-                  }}
-                  className={`text-sm sm:text-base px-4 py-2 rounded-full bg-[#ec5f80] text-white disabled:opacity-50`}
-                >
-                  {currentQuestionIndex === questions.length - 1 ? (isSubmitting ? "Submitting..." : "Submit") : "Next"}
-                </button>
-              </div>
-            </>
-          )}
+            {/* Timer & Progress Bar */}
+            {introStage === "quiz" && (
+              <>
+                <div className="mb-4 flex justify-between items-center text-white text-sm sm:text-base font-semibold">
+                  <div>
+                    Time Left:{" "}
+                    <span className={timeLeft <= 15 ? "text-red-400" : "text-[#ec5f80]"}>
+                      {formatTime(timeLeft)}
+                    </span>
+                  </div>
+                  <div>
+                    {currentQuestionIndex + 1} / {questions.length}
+                  </div>
+                </div>
+                <div className="w-full bg-[#1e1e1e] rounded-full h-2 mb-6">
+                  <div
+                    className="bg-[#ff3c83] h-2 rounded-full transition-all duration-500 ease-in-out"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Quiz Content */}
+            {introStage === "quiz" && (
+              <>
+              <p className="text-sm text-white mb-4">{currentQuestion.question_type}</p>
+                <h2 className="text-2xl sm:text-3xl text-white font-semibold mb-4">
+                  {currentQuestion.question_text}
+                </h2>
+                
+
+                {renderQuestion(currentQuestion)}
+
+                {/* Navigation Buttons */}
+                <div className="mt-6 flex justify-center items-center gap-4">
+                  <button
+                    onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
+                    disabled={currentQuestionIndex === 0}
+                    className={`w-10 h-10 rounded-full flex justify-center items-center text-xl font-bold ${
+                      currentQuestionIndex === 0
+                        ? "bg-gray-500 text-white cursor-not-allowed"
+                        : "bg-[#ec5f80] hover:bg-pink-600 text-white"
+                    }`}
+                  >
+                    ◀
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (currentQuestionIndex === questions.length - 1) submitQuiz();
+                    }}
+                    disabled={currentQuestionIndex !== questions.length - 1 || submitting} // Disable button if submitting is true
+                    className={`relative flex justify-center items-center px-6 py-2 font-bold uppercase tracking-wider rounded-full overflow-hidden transition-all duration-150 ease-in w-[150px] ${
+                      currentQuestionIndex === questions.length - 1
+                        ? "text-[#ff3c83] border-2 border-[#ff3c83] hover:text-white hover:border-white before:absolute before:top-0 before:left-1/2 before:right-1/2 before:bottom-0 before:bg-gradient-to-r before:from-[#fd297a] before:to-[#9424f0] before:opacity-0 before:transition-all before:duration-150 before:ease-in hover:before:left-0 hover:before:right-0 hover:before:opacity-100"
+                        : "text-gray-400 border-2 border-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    <span className="relative z-10 text-sm sm:text-base">{submitting ? "Submitting..." : "Submit"}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}
+                    disabled={currentQuestionIndex === questions.length - 1}
+                    className={`w-10 h-10 rounded-full flex justify-center items-center text-xl font-bold ${
+                      currentQuestionIndex === questions.length - 1
+                        ? "bg-gray-500 text-white cursor-not-allowed"
+                        : "bg-[#ec5f80] hover:bg-pink-600 text-white"
+                    }`}
+                  >
+                    ▶
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
       <Footer />
@@ -306,4 +352,10 @@ function PlayQuizContent() {
   );
 }
 
-export default PlayQuizContent;
+export default function PlayQuiz() {
+  return (
+    <Suspense fallback={<p className="text-center text-white mt-8">Loading quiz...</p>}>
+      <PlayQuizContent />
+    </Suspense>
+  );
+}
