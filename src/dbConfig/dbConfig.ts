@@ -4,7 +4,7 @@ EventEmitter.defaultMaxListeners = 20;
 import mongoose, { Mongoose } from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load environment variables
+dotenv.config({ path: '.env.production' });
 
 const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {

@@ -2,8 +2,6 @@ import { connect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 
-
-
 export async function POST(request: NextRequest) {
   try {
     await connect();
@@ -26,13 +24,15 @@ export async function POST(request: NextRequest) {
     const newUser = new User({
       username,
       email,
-      password,
+      password, // will be hashed via pre-save hook
     });
 
     const savedUser = await newUser.save();
+    const userWithoutPassword = savedUser.toObject();
+    delete userWithoutPassword.password;
 
     return NextResponse.json(
-      { message: "User created successfully", success: true, user: savedUser },
+      { message: "User created successfully", success: true, user: userWithoutPassword },
       { status: 201 }
     );
   } catch (error: unknown) {

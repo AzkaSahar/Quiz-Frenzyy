@@ -1,9 +1,8 @@
 import { connect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { NextRequest, NextResponse } from "next/server";
-
-
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +14,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    if (password !== user.password) {
+    // Compare entered password with hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 7 * 24 * 60* 60,
+      maxAge: 7 * 24 * 60 * 60,
     });
 
     return response;
