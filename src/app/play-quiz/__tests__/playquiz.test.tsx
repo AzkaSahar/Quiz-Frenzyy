@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 import PlayQuizContent from "../page";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -13,9 +13,18 @@ jest.mock("next/navigation", () => ({
 // --- Mock Global Fetch ---
 global.fetch = jest.fn();
 
-// --- Mock Child Components ---
-jest.mock("@/components/Header", () => () => <div data-testid="Header" />);
-jest.mock("@/components/Footer", () => () => <div data-testid="Footer" />);
+// --- Mock Child Components with display names ---
+jest.mock("@/components/Header", () => {
+  const MockHeader = () => <div data-testid="Header" />;
+  MockHeader.displayName = "Header";
+  return MockHeader;
+});
+
+jest.mock("@/components/Footer", () => {
+  const MockFooter = () => <div data-testid="Footer" />;
+  MockFooter.displayName = "Footer";
+  return MockFooter;
+});
 
 describe("PlayQuizContent", () => {
   beforeEach(() => {
@@ -26,7 +35,7 @@ describe("PlayQuizContent", () => {
     const mockPush = jest.fn();
     (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
     (useSearchParams as jest.Mock).mockReturnValue({
-      get: (key: string) => null, // No session_id or player_quiz_id
+      get: (_key: string) => null, // No session_id or player_quiz_id
     });
 
     render(<PlayQuizContent />);

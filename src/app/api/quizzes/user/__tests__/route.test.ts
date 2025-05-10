@@ -16,14 +16,9 @@ jest.mock('@/models/playerQuizModel', () => ({
 }));
 jest.mock('jsonwebtoken', () => ({ verify: jest.fn() }));
 
-// Stub NextResponse.json for assertions
-beforeAll(() => {
-  // Nothing needed here
-});
-afterAll(() => {
-});
 
-describe('GET /api/user/quizzes', () => {
+
+describe('GET /api/quizzes/user', () => {
   const connectMock = dbConfig.connect as jest.Mock;
   const findByIdMock = UserNew.findById as jest.Mock;
   const findPQMock = PlayerQuiz.find as jest.Mock;

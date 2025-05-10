@@ -4,16 +4,26 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import QuizResults from "@/app/results/[sessionId]/page";
 import { useParams } from "next/navigation";
+import React from "react";
 
 jest.mock("next/navigation", () => ({
   useParams: jest.fn(),
 }));
 
-// Mock Header and Footer
-jest.mock("@/components/Header", () => () => <div data-testid="header" />);
-jest.mock("@/components/Footer", () => () => <div data-testid="footer" />);
+// --- Mock Header and Footer with display names ---
+jest.mock("@/components/Header", () => {
+  const MockHeader = () => <div data-testid="header" />;
+  MockHeader.displayName = "Header";
+  return MockHeader;
+});
 
-// Mock fetch
+jest.mock("@/components/Footer", () => {
+  const MockFooter = () => <div data-testid="footer" />;
+  MockFooter.displayName = "Footer";
+  return MockFooter;
+});
+
+// --- Mock fetch ---
 global.fetch = jest.fn();
 
 const mockUseParams = useParams as jest.Mock;
@@ -47,7 +57,17 @@ describe("QuizResults Page", () => {
           score: 10,
           completed_at: new Date().toISOString(),
           end_time: futureTime,
-          answers: [{ question_text: "Q1?", submitted_answer: "A", is_correct: true, points: 5, question_type: "mcq", options: ["A", "B"], correct_answer: "A" }],
+          answers: [
+            {
+              question_text: "Q1?",
+              submitted_answer: "A",
+              is_correct: true,
+              points: 5,
+              question_type: "mcq",
+              options: ["A", "B"],
+              correct_answer: "A",
+            },
+          ],
         },
       }),
     });
@@ -101,7 +121,6 @@ describe("QuizResults Page", () => {
       expect(screen.getByText("What is 2+2?")).toBeInTheDocument();
     });
 
-    // Navigate to next question
     const nextButton = screen.getByRole("button", { name: "▶" });
     fireEvent.click(nextButton);
 

@@ -1,7 +1,6 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Profile from "../page"; // Adjust the import path as needed
 import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
 
 // Mock the required modules
 jest.mock("next/navigation", () => ({

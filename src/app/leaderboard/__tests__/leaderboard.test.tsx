@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import '@testing-library/jest-dom';
-import Leaderboard from "../page"; // Adjust if needed
+import Leaderboard from "../page"; // Adjust path if needed
 import { useSearchParams } from "next/navigation";
 
 // --- Mock Next.js navigation ---
@@ -13,13 +13,26 @@ jest.mock("next/navigation", () => ({
 global.fetch = jest.fn();
 
 // --- Mock Next Image ---
-jest.mock("next/image", () => (props: any) => {
-  return <img {...props} alt={props.alt || "mocked image"} />;
+jest.mock("next/image", () => {
+  const MockImage = (props: Record<string, unknown>) => {
+    return <img {...props} alt={props.alt as string || "mocked image"} />;
+  };
+  MockImage.displayName = "NextImage";
+  return MockImage;
 });
 
-// --- Mock Header/Footer ---
-jest.mock("@/components/Header", () => () => <div data-testid="Header" />);
-jest.mock("@/components/Footer", () => () => <div data-testid="Footer" />);
+// --- Mock Header/Footer with display names ---
+jest.mock("@/components/Header", () => {
+  const MockHeader = () => <div data-testid="Header" />;
+  MockHeader.displayName = "Header";
+  return MockHeader;
+});
+
+jest.mock("@/components/Footer", () => {
+  const MockFooter = () => <div data-testid="Footer" />;
+  MockFooter.displayName = "Footer";
+  return MockFooter;
+});
 
 describe("LeaderboardContent", () => {
   beforeEach(() => {

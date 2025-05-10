@@ -7,19 +7,27 @@ import userEvent from "@testing-library/user-event";
 import CreateQuiz from "../page";
 import { useRouter } from "next/navigation";
 
-
 // Mock next/navigation
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
-// Stub out Header/Footer
-jest.mock("@/components/Header", () => () => <header />);
-jest.mock("@/components/Footer", () => () => <footer />);
 
+// Stub out Header/Footer with display names
+jest.mock("@/components/Header", () => {
+  const MockHeader = () => <header />;
+  MockHeader.displayName = "Header";
+  return MockHeader;
+});
+
+jest.mock("@/components/Footer", () => {
+  const MockFooter = () => <footer />;
+  MockFooter.displayName = "Footer";
+  return MockFooter;
+});
 
 // Provide a global.fetch mock before tests
 beforeAll(() => {
-  (global as any).fetch = jest.fn((url: string) => {
+  global.fetch = jest.fn((url: string) => {
     if (url === "/api/users/profile") {
       return Promise.resolve({
         ok: true,
@@ -31,9 +39,8 @@ beforeAll(() => {
       ok: true,
       json: async () => ({}),
     });
-  });
+  }) as jest.Mock;
 });
-
 
 describe("CreateQuiz Page", () => {
   beforeEach(() => {
@@ -43,21 +50,12 @@ describe("CreateQuiz Page", () => {
     (useRouter as jest.Mock).mockReturnValue({ push: jest.fn() });
   });
 
-
   it('adds a new question section when "Add Question" is clicked', async () => {
-    // Render the page
     render(<CreateQuiz />);
 
-
-    // Find and click the Add Question button
     const addBtn = screen.getByRole("button", { name: /Add Question/i });
     await userEvent.click(addBtn);
 
-
-    // After clicking, "Question 1" heading should appear
     expect(await screen.findByText(/Question 1/i)).toBeInTheDocument();
   });
 });
-
-
-
